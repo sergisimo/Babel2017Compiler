@@ -3,9 +3,59 @@
  */
 public class Token {
 
+    public enum TokenType {
+        PROG,
+        FI_PROG,
+        CONST,
+        ID,
+        IGUAL,
+        PUNT_COMA,
+        VAR,
+        FUNC,
+        FI_FUNC,
+        PARENTESI_DAVANT,
+        PARENTESI_DARRERE,
+        TIPUS_SIMPLE,
+        PER_REF,
+        PER_VAL,
+        PUNT_PUNT,
+        COMA,
+        MES,
+        MENYS,
+        NOT,
+        OR,
+        MULTIPLICAR,
+        DIVIDIR,
+        AND,
+        CTE_ENTERA,
+        CTE_LOGICA,
+        CTE_CADENA,
+        CLAUDATOR_DAVANT,
+        CLAUDATOR_DARRERE,
+        INTERROGANT,
+        ESCRIURE,
+        LLEGIR,
+        CICLE,
+        FINS,
+        MENTRE,
+        FER,
+        FIMENTRE,
+        SI,
+        LLAVORS,
+        SINO,
+        FI_SI,
+        RETORNAR,
+        PERCADA,
+        EN,
+        FIPER,
+        OPER_REL
+    }
+
     /* ************************** ATTRIBUTES ***************************/
-    private String tokenType; //Guarda quin tipus de token es tracta.
+    private TokenType tokenType; //Guarda quin tipus de token es tracta.
     private String lexeme; //Guarda el lexema del token.
+
+
 
     /* ************************* CONSTRUCTORS ***************************/
     /**
@@ -13,7 +63,7 @@ public class Token {
      * @param tokenType String que contingui el tipus de token del nou Token.
      * @param lexeme String que contingui el lexema del nou Token.
      */
-    public Token (String tokenType, String lexeme) {
+    public Token (TokenType tokenType, String lexeme) {
 
         this.tokenType = tokenType;
         this.lexeme = lexeme;
@@ -33,7 +83,7 @@ public class Token {
      * Getter del tipus de Token.
      * @return Stirng amb el tipus de token del Token.
      */
-    public String getTokenType() {
+    public TokenType getTokenType() {
 
         return tokenType;
     }
@@ -51,7 +101,7 @@ public class Token {
      * Setter del tipus de token.
      * @param tokenType Stirng amb el tipus de token que es vol assignar al Token.
      */
-    public void setTokenType(String tokenType) {
+    public void setTokenType(TokenType tokenType) {
 
         this.tokenType = tokenType;
     }
