@@ -10,29 +10,51 @@ import java.util.LinkedList;
 public class Lexicographical {
 
     /* ************************** CONSTANTS ***************************/
-    private static final String VAR = "var";
-    private static final String CONST = "const";
-    private static final String PROG = "prog";
-    private static final String FIPROG = "fiprog";
-    private static final String FUNC = "func";
-    private static final String FIFUNC = "fifunc";
-    private static final String PERREF = "perref";
-    private static final String PERVAL = "perval";
-    private static final String LLEGIR = "llegir";
-    private static final String ESCRIURE = "escriure";
-    private static final String CICLE = "cicle";
-    private static final String FINS = "fins";
-    private static final String MENTRE = "mentre";
-    private static final String FER = "fer";
-    private static final String FIMENTRE = "fimentre";
-    private static final String SI = "si";
-    private static final String LLAVORS = "llavors";
-    private static final String SINO = "sino";
-    private static final String FISI = "fisi";
-    private static final String PERCADA = "percada";
-    private static final String EN = "en";
-    private static final String FIPER = "fiper";
-    private static final String RETORNAR = "retornar";
+    static final String VAR = "var";
+    static final String CONST = "const";
+    static final String PROG = "prog";
+    static final String FIPROG = "fiprog";
+    static final String FUNC = "func";
+    static final String FUNCIO = "funcio";
+    static final String FIFUNC = "fifunc";
+    static final String PERREF = "perref";
+    static final String PERVAL = "perval";
+    static final String LLEGIR = "llegir";
+    static final String ESCRIURE = "escriure";
+    static final String CICLE = "cicle";
+    static final String FINS = "fins";
+    static final String MENTRE = "mentre";
+    static final String FER = "fer";
+    static final String FIMENTRE = "fimentre";
+    static final String SI = "si";
+    static final String LLAVORS = "llavors";
+    static final String SINO = "sino";
+    static final String FISI = "fisi";
+    static final String PERCADA = "percada";
+    static final String EN = "en";
+    static final String FIPER = "fiper";
+    static final String RETORNAR = "retornar";
+    static final String SENCER = "sencer";
+    static final String LOGIC = "logic";
+    static final String NOT = "not";
+    static final String OR = "or";
+    static final String AND = "and";
+    static final String CERT = "cert";
+    static final String FALS = "fals";
+    static final String INTERROGANT = "?";
+    static final String COMA = ",";
+    static final String MES = "+";
+    static final String MENYS = "-";
+    static final String MULTIPLICAR = "*";
+    static final String PARENTESI_DAVANT = "(";
+    static final String PARENTESI_DARRERE = ")";
+    static final String CLAUDATOR_DAVANT = "[";
+    static final String CLAUDATOR_DARRERE = "]";
+    static final String PUNT_COMA = ";";
+    static final String DOS_PUNTS = ":";
+    private static final String EOF = "EOF";
+    private static final String DIVIDIR = "/";
+
 
     /* ************************** ATTRIBUTES ***************************/
     private int actualLine; //Control de la línia del fitxer en que l'analitzador es troba.
@@ -76,18 +98,18 @@ public class Lexicographical {
     public Token getToken() {
 
         boolean readChar = true;
+        this.actualToken = new Token();
 
-        if (endToken == 2) {
-            readChar = false;
-            endToken = 0;
-        }
+        if (endToken == 2) readChar = false;
+
+        endToken = 0;
 
         while (endToken == 0) {
 
-            if (readChar) getNextChar();
+            if (readChar) this.getNextChar();
             else readChar = true;
 
-            //endtoken = motor();
+            endToken = this.lexicographicalEngine();
         }
 
         return actualToken;
@@ -104,6 +126,209 @@ public class Lexicographical {
     }
 
     /* ************************ PRIVATE METHODS *************************/
+
+    private int lexicographicalEngine() {
+
+        switch (actualState) {
+
+            case 0: return this.state0();
+
+            case 1: return this.state1();
+
+            case 2: return this.state2();
+
+            case 3: return this.state3();
+
+            case 4: return this.state4();
+
+            case 5: return this.state5();
+
+            case 6: return this.state6();
+
+            case 7: return this.state7();
+
+            case 8: return this.state8();
+
+            case 9: return this.state9();
+
+            default: return 0;
+        }
+    }
+
+    private int state0 () {
+
+        if (eof) {
+            this.actualToken.setTokenType(Token.TokenType.EOF);
+            this.actualToken.setLexeme(EOF);
+            return 1;
+        } else if (actualChar == '/') {
+            actualState = 1;
+            return 0;
+        } else if ((actualChar >= 'a' && actualChar <= 'z') || (actualChar >= 'A' && actualChar <= 'Z')){
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            actualState = 3;
+            return 0;
+        } else if (actualChar >= '0' && actualChar <= '9') {
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            actualState = 4;
+            return 0;
+        } else if (actualChar == '"') {
+            actualState = 5;
+            return 0;
+        } else if (actualChar == ':' || actualChar == '?' || actualChar == ',' || actualChar == '+' || actualChar == '-' || actualChar == '*' || actualChar == '(' || actualChar == ')' || actualChar == '[' || actualChar == ']' || actualChar == ';') {
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            this.actualToken.setTokenTypeFromLexeme(this.actualToken.getLexeme());
+            return 1;
+        } else if (actualChar == '.') {
+            actualState = 6;
+            return 0;
+        } else if (actualChar == '<') {
+            actualState = 7;
+            return 0;
+        } else if (actualChar == '>') {
+            actualState = 8;
+            return 0;
+        } else if (actualChar == '=') {
+            actualState = 9;
+            return 0;
+        } else if (actualChar == ' ' || actualChar == '\r'){
+            return 0;
+        }else if (actualChar == '\n'){
+            actualLine++;
+            return 0;
+        } else {
+            //error
+            return 0;
+        }
+    }
+
+    private int state1 () {
+
+        if (actualChar == '/') {
+            actualState = 2;
+            return 0;
+        } else {
+            this.actualToken.setTokenType(Token.TokenType.DIVIDIR);
+            this.actualToken.setLexeme(DIVIDIR);
+            actualState = 0;
+            return 2;
+        }
+    }
+
+    private int state2 () {
+
+        if (actualChar == '\n') {
+            actualLine++;
+            actualState = 0;
+            return 1;
+        } else {
+            return 0;
+        }
+    }
+
+    private int state3 () {
+
+        if ((actualChar >= 'a' && actualChar <= 'z') || (actualChar >= 'A' && actualChar <= 'Z') || (actualChar >= '0' && actualChar <= '9') || (actualChar == '_') ) {
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            return 0;
+        } else {
+            if (this.containsKeyWord(this.actualToken.getLexeme())) {
+                this.actualToken.setTokenTypeFromLexeme(this.actualToken.getLexeme());
+                actualState = 0;
+                return 2;
+            } else {
+                if (this.actualToken.getLexeme().length() > 20) {
+                    this.actualToken.setLexeme(this.actualToken.getLexeme().substring(0, 20));
+                    //WARNING
+                }
+                this.actualToken.setTokenType(Token.TokenType.ID);
+                actualState = 0;
+                return 2;
+            }
+        }
+    }
+
+    private int state4() {
+
+        if (actualChar >= '0' && actualChar <= '9') {
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            return 0;
+        } else {
+            this.actualToken.setTokenType(Token.TokenType.CTE_ENTERA);
+            actualState = 0;
+            return 2;
+        }
+    }
+
+    private int state5() {
+
+        if (actualChar != '"') {
+            this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
+            return 0;
+        } else {
+            this.actualToken.setTokenType(Token.TokenType.CTE_CADENA);
+            actualState = 0;
+            return 1;
+        }
+    }
+
+    private int state6() {
+
+        if (actualChar == '.') {
+            this.actualToken.setLexeme("..");
+            this.actualToken.setTokenType(Token.TokenType.PUNT_PUNT);
+            actualState = 0;
+            return 1;
+        } else {
+            //ERROR
+            actualState = 0;
+            return  0;
+        }
+    }
+
+    private int state7() {
+
+        actualState = 0;
+        this.actualToken.setTokenType(Token.TokenType.OPER_REL);
+        if (actualChar != '=' && actualChar != '>') {
+            this.actualToken.setLexeme("<");
+            return 2;
+        } else if (actualChar == '=') {
+            this.actualToken.setLexeme("<=");
+            return 1;
+        } else {
+            this.actualToken.setLexeme("<>");
+            return 1;
+        }
+    }
+
+    private int state8 () {
+
+        actualState = 0;
+        this.actualToken.setTokenType(Token.TokenType.OPER_REL);
+        if (actualChar != '=') {
+            this.actualToken.setLexeme(">");
+            return 2;
+        } else {
+            this.actualToken.setLexeme(">=");
+            return 1;
+        }
+    }
+
+    private int state9 () {
+
+        actualState = 0;
+        if (actualChar == '=') {
+            this.actualToken.setTokenType(Token.TokenType.OPER_REL);
+            this.actualToken.setLexeme("==");
+            return 1;
+        } else {
+            this.actualToken.setTokenType(Token.TokenType.IGUAL);
+            this.actualToken.setLexeme("=");
+            return 2;
+        }
+    }
+
     /*
      * Procediment que permet llegir el següent caràcter del fitxer, controlant el final de fitxer.
      */
@@ -131,6 +356,7 @@ public class Lexicographical {
         keyWords.add(PROG);
         keyWords.add(FIPROG);
         keyWords.add(FUNC);
+        keyWords.add(FUNCIO);
         keyWords.add(FIFUNC);
         keyWords.add(PERREF);
         keyWords.add(PERVAL);
@@ -149,6 +375,13 @@ public class Lexicographical {
         keyWords.add(EN);
         keyWords.add(FIPER);
         keyWords.add(RETORNAR);
+        keyWords.add(SENCER);
+        keyWords.add(LOGIC);
+        keyWords.add(AND);
+        keyWords.add(OR);
+        keyWords.add(NOT);
+        keyWords.add(CERT);
+        keyWords.add(FALS);
     }
 
     /*
@@ -161,5 +394,14 @@ public class Lexicographical {
     }
 
     /* *** MAIN DE PROVA ******/
-    public static void main (String args[]) {}
+    public static void main (String args[]) {
+
+        Lexicographical lexicographical = new Lexicographical(args[0]);
+        Token aux;
+
+        do {
+            aux = lexicographical.getToken();
+            System.out.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
+        } while (aux.getTokenType() != Token.TokenType.EOF);
+    }
 }
