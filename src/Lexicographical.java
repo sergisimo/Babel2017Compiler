@@ -2,6 +2,7 @@
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 
 /**
@@ -71,17 +72,20 @@ public class Lexicographical {
 
     private LinkedList<String> keyWords; //Llista amb totes les paraules claus.
 
+    private Error error;
+
     /* ************************* CONSTRUCTORS ***************************/
     /**
      * Constructor del analitzador, que incialitze les variables necessaries i obre el fitxer.
      * @param fileName String que ha de contenir el nom del fitxer on es troba el programa que s'ha de compilar.
      */
-    public Lexicographical(String fileName) {
+    public Lexicographical(String fileName, Error error) {
 
-        actualLine = 0;
+        actualLine = 1;
         actualState = 0;
         eof = false;
         this.initializeKeyWords();
+        this.error = error;
 
         try {
             inputStream = new FileInputStream(fileName);
@@ -104,7 +108,9 @@ public class Lexicographical {
 
         endToken = 0;
 
-        while (endToken == 0) {
+        while (endToken == 0 || endToken == 3) {
+
+            if (endToken == 3) readChar = false;
 
             if (readChar) this.getNextChar();
             else readChar = true;
@@ -113,6 +119,15 @@ public class Lexicographical {
         }
 
         return actualToken;
+    }
+
+    public void closeInputSteram () {
+
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+                //CONTROL ERRORS
+        }
     }
 
     /* *********************** GETTERS & SETTERS ************************/
@@ -197,7 +212,7 @@ public class Lexicographical {
             actualLine++;
             return 0;
         } else {
-            //error
+            error.writeError(Error.ERR_LEX_1_CODE, this.actualLine, this.actualChar);
             return 0;
         }
     }
@@ -220,7 +235,7 @@ public class Lexicographical {
         if (actualChar == '\n') {
             actualLine++;
             actualState = 0;
-            return 1;
+            return 0;
         } else {
             return 0;
         }
@@ -238,8 +253,8 @@ public class Lexicographical {
                 return 2;
             } else {
                 if (this.actualToken.getLexeme().length() > 20) {
+                    error.writeWarning(Error.WAR_LEX_1_CODE, this.actualLine, this.actualToken.getLexeme());
                     this.actualToken.setLexeme(this.actualToken.getLexeme().substring(0, 20));
-                    //WARNING
                 }
                 this.actualToken.setTokenType(Token.TokenType.ID);
                 actualState = 0;
@@ -280,9 +295,9 @@ public class Lexicographical {
             actualState = 0;
             return 1;
         } else {
-            //ERROR
+            error.writeError(Error.ERR_LEX_1_CODE, this.actualLine, '.');
             actualState = 0;
-            return  0;
+            return  3;
         }
     }
 
@@ -396,12 +411,26 @@ public class Lexicographical {
     /* *** MAIN DE PROVA ******/
     public static void main (String args[]) {
 
-        Lexicographical lexicographical = new Lexicographical(args[0]);
+        String[] auxFileName = args[0].split(".bab");
+        Error error = new Error(auxFileName[0]);
+        Lexicographical lexicographical = new Lexicographical(args[0], error);
         Token aux;
+        String fileName = auxFileName[0] + ".lex";
 
-        do {
-            aux = lexicographical.getToken();
-            System.out.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
-        } while (aux.getTokenType() != Token.TokenType.EOF);
+        try {
+            PrintWriter fileWritter = new PrintWriter(fileName, "UTF-8");
+
+            do {
+                aux = lexicographical.getToken();
+                fileWritter.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
+            } while (aux.getTokenType() != Token.TokenType.EOF);
+
+            fileWritter.close();
+        } catch (IOException e) {
+            //Control d'errors
+        }
+
+        error.closeFileWriter();
+        lexicographical.closeInputSteram();
     }
 }
