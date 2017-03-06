@@ -1,8 +1,16 @@
 /**
  * Classe que permet guardar la informació referent a un Token.
+ * 
+ * @author Sergi Simó Bosquet - ls30685
+ * @author Esteve Genovard Ferriol - ls30742
+ *
+ * Date: 05/03/2017
  */
 public class Token {
 
+    /**
+     * Enumeració que inclou tots els tipus de token.
+     */
     public enum TokenType {
         PROG,
         FI_PROG,
@@ -104,6 +112,10 @@ public class Token {
         this.tokenType = tokenType;
     }
 
+    /**
+     * Setter del tipus de token a partir del lexema.
+     * @param lexeme String amb el lexeme del qual s'ha d'extreure el tipus de Token.
+     */
     public void setTokenTypeFromLexeme(String lexeme) {
 
         if (lexeme.equalsIgnoreCase(Lexicographical.VAR)) this.tokenType = TokenType.VAR;

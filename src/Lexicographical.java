@@ -7,6 +7,11 @@ import java.util.LinkedList;
 
 /**
  * Classe que implementa l'analitzador lexicogràfic del compilador de Babel2017.
+ *
+ * @author Sergi Simó Bosquet - ls30685
+ * @author Esteve Genovard Ferriol - ls30742
+ *
+ * Date: 05/03/2017
  */
 public class Lexicographical {
 
@@ -72,7 +77,7 @@ public class Lexicographical {
 
     private LinkedList<String> keyWords; //Llista amb totes les paraules claus.
 
-    private Error error;
+    private Error error; //Objecte que permet escriure errors.
 
     /* ************************* CONSTRUCTORS ***************************/
     /**
@@ -121,6 +126,9 @@ public class Lexicographical {
         return actualToken;
     }
 
+    /**
+     * Procediment que tanca el fitxer d'entrada del programa que s'esta compilant.
+     */
     public void closeInputSteram () {
 
         try {
@@ -142,6 +150,9 @@ public class Lexicographical {
 
     /* ************************ PRIVATE METHODS *************************/
 
+    /*
+     * Funció que implementa el motor del lexicogràfic.
+     */
     private int lexicographicalEngine() {
 
         switch (actualState) {
@@ -170,6 +181,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 0 del motor del lexicogràfic.
+     */
     private int state0 () {
 
         if (eof) {
@@ -217,6 +231,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 1 del motor del lexicogràfic.
+     */
     private int state1 () {
 
         if (actualChar == '/') {
@@ -230,17 +247,21 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 2 del motor del lexicogràfic.
+     */
     private int state2 () {
 
         if (actualChar == '\n') {
             actualLine++;
             actualState = 0;
-            return 0;
-        } else {
-            return 0;
         }
+        return 0;
     }
 
+    /*
+     * Funció que implementa l'estat 3 del motor del lexicogràfic.
+     */
     private int state3 () {
 
         if ((actualChar >= 'a' && actualChar <= 'z') || (actualChar >= 'A' && actualChar <= 'Z') || (actualChar >= '0' && actualChar <= '9') || (actualChar == '_') ) {
@@ -263,6 +284,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 4 del motor del lexicogràfic.
+     */
     private int state4() {
 
         if (actualChar >= '0' && actualChar <= '9') {
@@ -275,6 +299,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 5 del motor del lexicogràfic.
+     */
     private int state5() {
 
         if (actualChar != '"') {
@@ -287,6 +314,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 6 del motor del lexicogràfic.
+     */
     private int state6() {
 
         if (actualChar == '.') {
@@ -301,6 +331,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 7 del motor del lexicogràfic.
+     */
     private int state7() {
 
         actualState = 0;
@@ -317,6 +350,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 8 del motor del lexicogràfic.
+     */
     private int state8 () {
 
         actualState = 0;
@@ -330,6 +366,9 @@ public class Lexicographical {
         }
     }
 
+    /*
+     * Funció que implementa l'estat 9 del motor del lexicogràfic.
+     */
     private int state9 () {
 
         actualState = 0;
@@ -345,7 +384,7 @@ public class Lexicographical {
     }
 
     /*
-     * Procediment que permet llegir el següent caràcter del fitxer, controlant el final de fitxer.
+     * Funció que permet llegir el següent caràcter del fitxer, controlant el final de fitxer.
      */
     private void getNextChar() {
 
@@ -400,7 +439,7 @@ public class Lexicographical {
     }
 
     /*
-     * Procediment que retorna cert si la String que es passa per paràmetre és una paraula clau
+     * Funció que retorna cert si la String que es passa per paràmetre és una paraula clau
      */
     private boolean containsKeyWord(String keyWord) {
 
@@ -408,7 +447,7 @@ public class Lexicographical {
         return false;
     }
 
-    /* *** MAIN DE PROVA ******/
+    /* *** MAIN PROVISIONAL ******/
     public static void main (String args[]) {
 
         String[] auxFileName = args[0].split(".bab");

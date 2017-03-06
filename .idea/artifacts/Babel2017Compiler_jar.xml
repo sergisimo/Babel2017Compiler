@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Babel2017Compiler:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Babel2017Compiler_jar</output-path>
+    <root id="archive" name="Babel2017Compiler.jar">
+      <element id="module-output" name="Babel2017Compiler" />
+    </root>
+  </artifact>
+</component>
