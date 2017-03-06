@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.LinkedList;
 
+import static java.lang.System.exit;
+
 /**
  * Classe que implementa l'analitzador lexicogràfic del compilador de Babel2017.
  *
@@ -40,6 +42,8 @@ public class Lexicographical {
     static final String EN = "en";
     static final String FIPER = "fiper";
     static final String RETORNAR = "retornar";
+    static final String VECTOR = "vector";
+    static final String DE = "de";
     static final String SENCER = "sencer";
     static final String LOGIC = "logic";
     static final String NOT = "not";
@@ -83,6 +87,7 @@ public class Lexicographical {
     /**
      * Constructor del analitzador, que incialitze les variables necessaries i obre el fitxer.
      * @param fileName String que ha de contenir el nom del fitxer on es troba el programa que s'ha de compilar.
+     * @param error Objecte error que ha de permetre escriure errors en el fitxer d'error.
      */
     public Lexicographical(String fileName, Error error) {
 
@@ -95,7 +100,8 @@ public class Lexicographical {
         try {
             inputStream = new FileInputStream(fileName);
         } catch (FileNotFoundException e) {
-            //Control de errors
+            System.out.println("Error! El fitxer " + fileName + " no existeix.");
+            exit(-1);
         }
     }
 
@@ -436,6 +442,8 @@ public class Lexicographical {
         keyWords.add(NOT);
         keyWords.add(CERT);
         keyWords.add(FALS);
+        keyWords.add(VECTOR);
+        keyWords.add(DE);
     }
 
     /*
@@ -450,26 +458,31 @@ public class Lexicographical {
     /* *** MAIN PROVISIONAL ******/
     public static void main (String args[]) {
 
-        String[] auxFileName = args[0].split(".bab");
-        Error error = new Error(auxFileName[0]);
-        Lexicographical lexicographical = new Lexicographical(args[0], error);
-        Token aux;
-        String fileName = auxFileName[0] + ".lex";
+        if (args.length != 1) {
+            System.out.println("Error! Parametres introduits incorrectement. [EX] \"java -jar Babel2017Compiler.jar programa1.bab\"");
+        } else {
+            String[] auxFileName = args[0].split(".bab");
+            Error error = new Error(auxFileName[0]);
+            Lexicographical lexicographical = new Lexicographical(args[0], error);
+            Token aux;
+            String fileName = auxFileName[0] + ".lex";
 
-        try {
-            PrintWriter fileWritter = new PrintWriter(fileName, "UTF-8");
+            try {
+                PrintWriter fileWritter = new PrintWriter(fileName, "UTF-8");
 
-            do {
-                aux = lexicographical.getToken();
-                fileWritter.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
-            } while (aux.getTokenType() != Token.TokenType.EOF);
+                do {
+                    aux = lexicographical.getToken();
+                    fileWritter.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
+                } while (aux.getTokenType() != Token.TokenType.EOF);
 
-            fileWritter.close();
-        } catch (IOException e) {
-            //Control d'errors
+                fileWritter.close();
+            } catch (IOException e) {
+                System.out.println("Error de I/O en la execució!");
+                exit(-1);
+            }
+
+            error.closeFileWriter();
+            lexicographical.closeInputSteram();
         }
-
-        error.closeFileWriter();
-        lexicographical.closeInputSteram();
     }
 }

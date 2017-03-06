@@ -1,6 +1,6 @@
 /**
  * Classe que permet guardar la informació referent a un Token.
- * 
+ *
  * @author Sergi Simó Bosquet - ls30685
  * @author Esteve Genovard Ferriol - ls30742
  *
@@ -28,6 +28,8 @@ public class Token {
         PER_REF,
         PER_VAL,
         PUNT_PUNT,
+        VECTOR,
+        DE,
         DOS_PUNTS,
         COMA,
         MES,
@@ -153,6 +155,8 @@ public class Token {
         else if (lexeme.equalsIgnoreCase(Lexicographical.CLAUDATOR_DARRERE)) this.tokenType = TokenType.CLAUDATOR_DARRERE;
         else if (lexeme.equalsIgnoreCase(Lexicographical.PUNT_COMA)) this.tokenType = TokenType.PUNT_COMA;
         else if (lexeme.equalsIgnoreCase(Lexicographical.DOS_PUNTS)) this.tokenType = TokenType.DOS_PUNTS;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.VECTOR)) this.tokenType = TokenType.VECTOR;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.DE)) this.tokenType = TokenType.DE;
         else if (lexeme.equalsIgnoreCase(Lexicographical.SENCER) || lexeme.equalsIgnoreCase(Lexicographical.LOGIC)) this.tokenType = TokenType.TIPUS_SIMPLE;
         else if (lexeme.equalsIgnoreCase(Lexicographical.NOT)) this.tokenType = TokenType.NOT;
         else if (lexeme.equalsIgnoreCase(Lexicographical.OR)) this.tokenType = TokenType.OR;

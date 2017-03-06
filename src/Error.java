@@ -2,6 +2,8 @@
 import java.io.IOException;
 import java.io.PrintWriter;
 
+import static java.lang.System.exit;
+
 /**
  * Classe que implementa tots els mecanismes per la correcta creació i escritura del fitxer de errors.
  *
@@ -40,7 +42,8 @@ public class Error {
         try {
             fileWritter = new PrintWriter(fileName, "UTF-8");
         } catch (IOException e) {
-            //Control d'errors
+            System.out.println("Error de I/O en la execució!");
+            exit(-1);
         }
     }
 
