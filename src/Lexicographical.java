@@ -313,7 +313,10 @@ public class Lexicographical {
      */
     private int state5() {
 
-        if (actualChar != '"') {
+        if (eof) {
+            actualState = 0;
+            return 3;
+        } else if (actualChar != '"') {
             this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
             return 0;
         } else {
