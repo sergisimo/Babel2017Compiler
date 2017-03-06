@@ -226,7 +226,7 @@ public class Lexicographical {
         } else if (actualChar == '=') {
             actualState = 9;
             return 0;
-        } else if (actualChar == ' ' || actualChar == '\r'){
+        } else if (actualChar == ' ' || actualChar == '\r' || actualChar == '\t'){
             return 0;
         }else if (actualChar == '\n'){
             actualLine++;
@@ -261,6 +261,9 @@ public class Lexicographical {
         if (actualChar == '\n') {
             actualLine++;
             actualState = 0;
+        } else if (eof) {
+            actualState = 0;
+            return 3;
         }
         return 0;
     }
