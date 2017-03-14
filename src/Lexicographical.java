@@ -1,8 +1,5 @@
 /* **************************** IMPORTS *****************************/
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.LinkedList;
 
 import static java.lang.System.exit;
@@ -65,6 +62,8 @@ public class Lexicographical {
     private static final String EOF = "EOF";
     private static final String DIVIDIR = "/";
 
+    private static final int MAX_ID_LENGTH = 32;
+
 
     /* ************************** ATTRIBUTES ***************************/
     private int actualLine; //Control de la línia del fitxer en que l'analitzador es troba.
@@ -81,28 +80,46 @@ public class Lexicographical {
 
     private LinkedList<String> keyWords; //Llista amb totes les paraules claus.
 
-    private Error error; //Objecte que permet escriure errors.
+    private PrintWriter fileWritter; //Objecte per poder escriure el fitxer de lexemes.
+
+    private static Lexicographical instance; //Instancia del singleton.
 
     /* ************************* CONSTRUCTORS ***************************/
     /**
      * Constructor del analitzador, que incialitze les variables necessaries i obre el fitxer.
      * @param fileName String que ha de contenir el nom del fitxer on es troba el programa que s'ha de compilar.
-     * @param error Objecte error que ha de permetre escriure errors en el fitxer d'error.
      */
-    public Lexicographical(String fileName, Error error) {
+    public Lexicographical(String fileName) {
 
-        actualLine = 1;
-        actualState = 0;
-        eof = false;
-        this.initializeKeyWords();
-        this.error = error;
 
-        try {
-            inputStream = new FileInputStream(fileName);
-        } catch (FileNotFoundException e) {
-            System.out.println("Error! El fitxer " + fileName + " no existeix.");
-            exit(-1);
+        if (instance == null) {
+            String fileNameLex = fileName + ".lex";
+            fileName += ".bab";
+
+            actualLine = 1;
+            actualState = 0;
+            eof = false;
+            this.initializeKeyWords();
+
+            try {
+                inputStream = new FileInputStream(fileName);
+                fileWritter = new PrintWriter(fileNameLex, "UTF-8");
+
+            } catch (FileNotFoundException e) {
+                System.out.println("Error! El fitxer " + fileName + " no existeix.");
+                exit(-1);
+            } catch (UnsupportedEncodingException e) {
+                System.out.println("Error! El fitxer " + fileNameLex + " no s'ha pogut crear.");
+                exit(-1);
+            }
+
+            instance = this;
         }
+    }
+
+    public static Lexicographical getInstance() {
+
+        return instance;
     }
 
     /* ************************* PUBLIC METHODS **************************/
@@ -129,6 +146,9 @@ public class Lexicographical {
             endToken = this.lexicographicalEngine();
         }
 
+        fileWritter.println("[ " + actualToken.getTokenType() + ", " + actualToken.getLexeme() + " ]");
+        if (eof) fileWritter.close();
+
         return actualToken;
     }
 
@@ -140,7 +160,8 @@ public class Lexicographical {
         try {
             inputStream.close();
         } catch (IOException e) {
-                //CONTROL ERRORS
+            System.out.println("Error! No s'ha tancat correctament el fitxer .bab.");
+            exit(-1);
         }
     }
 
@@ -232,7 +253,7 @@ public class Lexicographical {
             actualLine++;
             return 0;
         } else {
-            error.writeError(Error.ERR_LEX_1_CODE, this.actualLine, this.actualChar);
+            Error.getInstance().writeError(0, this.actualLine, this.actualChar);
             return 0;
         }
     }
@@ -279,14 +300,16 @@ public class Lexicographical {
         } else {
             if (this.containsKeyWord(this.actualToken.getLexeme())) {
                 this.actualToken.setTokenTypeFromLexeme(this.actualToken.getLexeme());
+                this.actualToken.setLexeme(this.actualToken.getLexeme().toLowerCase());
                 actualState = 0;
                 return 2;
             } else {
-                if (this.actualToken.getLexeme().length() > 20) {
-                    error.writeWarning(Error.WAR_LEX_1_CODE, this.actualLine, this.actualToken.getLexeme());
-                    this.actualToken.setLexeme(this.actualToken.getLexeme().substring(0, 20));
+                if (this.actualToken.getLexeme().length() > MAX_ID_LENGTH) {
+                    Error.getInstance().writeWarning(0, this.actualLine, this.actualToken.getLexeme(), this.actualToken.getLexeme().substring(0, MAX_ID_LENGTH));
+                    this.actualToken.setLexeme(this.actualToken.getLexeme().substring(0, MAX_ID_LENGTH));
                 }
                 this.actualToken.setTokenType(Token.TokenType.ID);
+                this.actualToken.setLexeme(this.actualToken.getLexeme().toLowerCase());
                 actualState = 0;
                 return 2;
             }
@@ -314,12 +337,17 @@ public class Lexicographical {
     private int state5() {
 
         if (eof) {
+            Error.getInstance().writeError(1, this.actualLine);
             actualState = 0;
-            return 3;
-        } else if (actualChar != '"') {
+            return 1;
+        } else if (actualChar != '"' && actualChar != '\n' && actualChar != '\r') {
             this.actualToken.setLexeme(this.actualToken.getLexeme() + actualChar);
             return 0;
         } else {
+            if (actualChar == '\n' || actualChar == '\r') {
+                Error.getInstance().writeError(1, this.actualLine);
+                if (actualChar == '\n') this.actualLine++;
+            }
             this.actualToken.setTokenType(Token.TokenType.CTE_CADENA);
             actualState = 0;
             return 1;
@@ -337,7 +365,7 @@ public class Lexicographical {
             actualState = 0;
             return 1;
         } else {
-            error.writeError(Error.ERR_LEX_1_CODE, this.actualLine, '.');
+            Error.getInstance().writeError(0, this.actualLine, '.');
             actualState = 0;
             return  3;
         }
@@ -461,34 +489,20 @@ public class Lexicographical {
         return false;
     }
 
-    /* *** MAIN PROVISIONAL ******/
-    public static void main (String args[]) {
+    /*public static void main(String args[]) {
 
-        if (args.length != 1) {
-            System.out.println("Error! Parametres introduits incorrectement. [EX] \"java -jar Babel2017Compiler.jar programa1.bab\"");
-        } else {
-            String[] auxFileName = args[0].split(".bab");
-            Error error = new Error(auxFileName[0]);
-            Lexicographical lexicographical = new Lexicographical(args[0], error);
-            Token aux;
-            String fileName = auxFileName[0] + ".lex";
+        String[] auxFileName = args[0].split(".bab");
 
-            try {
-                PrintWriter fileWritter = new PrintWriter(fileName, "UTF-8");
+        Lexicographical lex = new Lexicographical(auxFileName[0]);
+        Error error = new Error(auxFileName[0]);
+        Token aux;
 
-                do {
-                    aux = lexicographical.getToken();
-                    fileWritter.println("[ " + aux.getTokenType() + ", " + aux.getLexeme() + " ]");
-                } while (aux.getTokenType() != Token.TokenType.EOF);
-
-                fileWritter.close();
-            } catch (IOException e) {
-                System.out.println("Error de I/O en la execució!");
-                exit(-1);
-            }
-
-            error.closeFileWriter();
-            lexicographical.closeInputSteram();
+        aux = lex.getToken();
+        while (aux.getTokenType() != Token.TokenType.EOF) {
+            aux = lex.getToken();
         }
-    }
+
+        error.closeFileWriter();
+        lex.closeInputSteram();
+    }*/
 }

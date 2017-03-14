@@ -13,7 +13,7 @@ public class Token {
      */
     public enum TokenType {
         PROG,
-        FI_PROG,
+        FIPROG,
         CONST,
         ID,
         IGUAL,
@@ -21,12 +21,12 @@ public class Token {
         VAR,
         FUNC,
         FUNCIO,
-        FI_FUNC,
+        FIFUNC,
         PARENTESI_DAVANT,
         PARENTESI_DARRERE,
         TIPUS_SIMPLE,
-        PER_REF,
-        PER_VAL,
+        PERREF,
+        PERVAL,
         PUNT_PUNT,
         VECTOR,
         DE,
@@ -55,7 +55,7 @@ public class Token {
         SI,
         LLAVORS,
         SINO,
-        FI_SI,
+        FISI,
         RETORNAR,
         PERCADA,
         EN,
@@ -123,12 +123,12 @@ public class Token {
         if (lexeme.equalsIgnoreCase(Lexicographical.VAR)) this.tokenType = TokenType.VAR;
         else if (lexeme.equalsIgnoreCase(Lexicographical.CONST)) this.tokenType = TokenType.CONST;
         else if (lexeme.equalsIgnoreCase(Lexicographical.PROG)) this.tokenType = TokenType.PROG;
-        else if (lexeme.equalsIgnoreCase(Lexicographical.FIPROG)) this.tokenType = TokenType.FI_PROG;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.FIPROG)) this.tokenType = TokenType.FIPROG;
         else if (lexeme.equalsIgnoreCase(Lexicographical.FUNC)) this.tokenType = TokenType.FUNC;
         else if (lexeme.equalsIgnoreCase(Lexicographical.FUNCIO)) this.tokenType = TokenType.FUNCIO;
-        else if (lexeme.equalsIgnoreCase(Lexicographical.FIFUNC)) this.tokenType = TokenType.FI_FUNC;
-        else if (lexeme.equalsIgnoreCase(Lexicographical.PERREF)) this.tokenType = TokenType.PER_REF;
-        else if (lexeme.equalsIgnoreCase(Lexicographical.PERVAL)) this.tokenType = TokenType.PER_VAL;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.FIFUNC)) this.tokenType = TokenType.FIFUNC;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.PERREF)) this.tokenType = TokenType.PERREF;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.PERVAL)) this.tokenType = TokenType.PERVAL;
         else if (lexeme.equalsIgnoreCase(Lexicographical.LLEGIR)) this.tokenType = TokenType.LLEGIR;
         else if (lexeme.equalsIgnoreCase(Lexicographical.ESCRIURE)) this.tokenType = TokenType.ESCRIURE;
         else if (lexeme.equalsIgnoreCase(Lexicographical.CICLE)) this.tokenType = TokenType.CICLE;
@@ -139,7 +139,7 @@ public class Token {
         else if (lexeme.equalsIgnoreCase(Lexicographical.SI)) this.tokenType = TokenType.SI;
         else if (lexeme.equalsIgnoreCase(Lexicographical.LLAVORS)) this.tokenType = TokenType.LLAVORS;
         else if (lexeme.equalsIgnoreCase(Lexicographical.SINO)) this.tokenType = TokenType.SINO;
-        else if (lexeme.equalsIgnoreCase(Lexicographical.FISI)) this.tokenType = TokenType.FI_SI;
+        else if (lexeme.equalsIgnoreCase(Lexicographical.FISI)) this.tokenType = TokenType.FISI;
         else if (lexeme.equalsIgnoreCase(Lexicographical.PERCADA)) this.tokenType = TokenType.PERCADA;
         else if (lexeme.equalsIgnoreCase(Lexicographical.EN)) this.tokenType = TokenType.EN;
         else if (lexeme.equalsIgnoreCase(Lexicographical.FIPER)) this.tokenType = TokenType.FIPER;

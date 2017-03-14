@@ -17,18 +17,20 @@ public class Error {
     /* ************************** CONSTANTS ***************************/
     private static final String FILE_ERROR_EXTENSION = ".err";
 
-    private static final String LINE_NUMBER_REPLACER = "$LN";
-    private static final String INFO_REPLACER = "$INFO";
-    private static final String INFO_1_REPLACER = "$1INFO";
+    private static final String[] ERRORS = {
+            "[ERR_LEX_1] %d, Caràcter %c desconegut",
+            "[ERR_LEX_2] %d, Els delimitadors de la constant cadena [\"] no estan tancats"
+    };
 
-    static final String ERR_LEX_1_CODE = "ERR_LEX1";
-    private static final String ERR_LEX_1 = "[ERR_LEX_1] $LN, Caràcter [$INFO] desconegut";
 
-    static final String WAR_LEX_1_CODE = "WAR_LEX1";
-    private static final String WAR_LEX_1 = "[WAR_LEX_1] $LN, Identificador [$INFO] té més de 20 caràcters, l'identificador es tallarà per [$1INFO]";
+    private static final String[] WARNINGS = {
+            "[WAR_LEX_1] %d, Identificador %s té més de 32 caràcters, l'identificador es tallarà per %s"
+    };
 
     /* ************************** ATTRIBUTES ***************************/
     PrintWriter fileWritter; //Eina per escriure en el fitxer d'error.
+
+    private static Error instance; //Instancia del singleton.
 
     /* ************************* CONSTRUCTORS ***************************/
     /**
@@ -37,14 +39,23 @@ public class Error {
      */
     public Error (String fileName) {
 
-        fileName += FILE_ERROR_EXTENSION;
+        if (instance == null) {
+            fileName += FILE_ERROR_EXTENSION;
 
-        try {
-            fileWritter = new PrintWriter(fileName, "UTF-8");
-        } catch (IOException e) {
-            System.out.println("Error de I/O en la execució!");
-            exit(-1);
+            try {
+                fileWritter = new PrintWriter(fileName, "UTF-8");
+            } catch (IOException e) {
+                System.out.println("Error! El fitxer " + fileName + " no s'ha pogut crear.");
+                exit(-1);
+            }
+
+            instance = this;
         }
+    }
+
+    public static Error getInstance() {
+
+        return instance;
     }
 
     /* ************************* PUBLIC METHODS **************************/
@@ -57,43 +68,13 @@ public class Error {
         fileWritter.close();
     }
 
-    /**
-     * Procediment que permet escriure un error en el fitxer d'error.
-     * @param code Codi del error que es vol escriure.
-     * @param line Linia en la qual es troba l'error.
-     * @param extraInformation Informacio extra per complementar l'error. (El seu tipus depen del error).
-     */
-    public void writeError (String code, int line, Object extraInformation) {
+    public void writeError(int errorCode, Object ... args) {
 
-        switch (code) {
-
-            case ERR_LEX_1_CODE:
-                String aux = ERR_LEX_1.replace(LINE_NUMBER_REPLACER, Integer.toString(line));
-                aux = aux.replace(INFO_REPLACER, Character.toString((char)extraInformation));
-                fileWritter.println(aux);
-                break;
-        }
+        fileWritter.println(String.format(ERRORS[errorCode], args));
     }
 
-    /**
-     * Procediment que permet escriure un warning en el fitxer d'error.
-     * @param code Codi del warning que es vol escriure.
-     * @param line Linia en la qual es troba el warning.
-     * @param extraInformation Informacio extra per complementar el warning. (El seu tipus depen del warning).
-     */
-    public void writeWarning (String code, int line, Object extraInformation) {
+    public void writeWarning(int warningCode, Object ... args) {
 
-        switch (code) {
-
-            case WAR_LEX_1_CODE:
-                String aux = WAR_LEX_1.replace(LINE_NUMBER_REPLACER, Integer.toString(line));
-                String id = (String) extraInformation;
-                String cuttedId = id.substring(0, 20);
-
-                aux = aux.replace(INFO_REPLACER, id);
-                aux = aux.replace(INFO_1_REPLACER, cuttedId);
-                fileWritter.println(aux);
-                break;
-        }
+        fileWritter.println(String.format(WARNINGS[warningCode], args));
     }
 }
