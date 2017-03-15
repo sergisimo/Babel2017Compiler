@@ -62,20 +62,33 @@ public class Syntactic {
     }
 
     private void Decl_Cte_Var() {
+        switch (lookAhead.getTokenType()) {
+
+            case CONST:
+            case VAR:
+                this.Decl_CV();
+                this.Decl_Cte_Var();
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    private void Decl_CV() {
 
         switch (lookAhead.getTokenType()) {
 
             case CONST:
                 this.Dec_Cte();
-                this.Decl_Cte_Var();
                 break;
 
             case VAR:
                 this.Dec_Var();
-                this.Decl_Cte_Var();
                 break;
 
             default:
+                //ERROR
                 break;
         }
     }
@@ -181,11 +194,13 @@ public class Syntactic {
 
     private void Tipus() {
 
-        switch (lookAhead.getTokenType()) {
+        this.Tipus_Abr();
+        this.accept(Token.TokenType.TIPUS_SIMPLE);
+    }
 
-            case TIPUS_SIMPLE:
-                this.accept(Token.TokenType.TIPUS_SIMPLE);
-                break;
+    private void Tipus_Abr() {
+
+        switch (lookAhead.getTokenType()) {
 
             case VECTOR:
                 this.accept(Token.TokenType.VECTOR);
@@ -195,11 +210,9 @@ public class Syntactic {
                 this.Exp();
                 this.accept(Token.TokenType.CLAUDATOR_DARRERE);
                 this.accept(Token.TokenType.DE);
-                this.accept(Token.TokenType.TIPUS_SIMPLE);
                 break;
 
             default:
-                //ERROR
                 break;
         }
     }
@@ -266,37 +279,28 @@ public class Syntactic {
 
     private void Exp_Simple() {
 
+        this.Exp_Simple1();
+        this.Terme();
+        this.Terme1();
+    }
+
+    private void Exp_Simple1() {
+
         switch (lookAhead.getTokenType()) {
 
             case MES:
                 this.accept(Token.TokenType.MES);
-                this.Terme();
-                this.Terme1();
-                break;
-
-            case CTE_ENTERA:
-            case CTE_LOGICA:
-            case CTE_CADENA:
-            case PARENTESI_DAVANT:
-            case ID:
-                this.Terme();
-                this.Terme1();
                 break;
 
             case MENYS:
                 this.accept(Token.TokenType.MENYS);
-                this.Terme();
-                this.Terme1();
                 break;
 
             case NOT:
                 this.accept(Token.TokenType.NOT);
-                this.Terme();
-                this.Terme1();
                 break;
 
             default:
-                //ERROR
                 break;
         }
     }
@@ -312,24 +316,36 @@ public class Syntactic {
         switch (lookAhead.getTokenType()) {
 
             case MES:
-                this.accept(Token.TokenType.MES);
-                this.Terme();
-                this.Terme1();
-                break;
-
             case MENYS:
-                this.accept(Token.TokenType.MENYS);
-                this.Terme();
-                this.Terme1();
-                break;
-
             case OR:
-                this.accept(Token.TokenType.OR);
+                this.Terme2();
                 this.Terme();
                 this.Terme1();
                 break;
 
             default:
+                break;
+        }
+    }
+
+    private void Terme2() {
+
+        switch (lookAhead.getTokenType()) {
+
+            case MES:
+                this.accept(Token.TokenType.MES);
+                break;
+
+            case MENYS:
+                this.accept(Token.TokenType.MENYS);
+                break;
+
+            case OR:
+                this.accept(Token.TokenType.OR);
+                break;
+
+            default:
+                //ERROR
                 break;
         }
     }
@@ -372,24 +388,36 @@ public class Syntactic {
         switch (lookAhead.getTokenType()) {
 
             case MULTIPLICAR:
-                this.accept(Token.TokenType.MULTIPLICAR);
-                this.Factor();
-                this.Factor1();
-                break;
-
             case DIVIDIR:
-                this.accept(Token.TokenType.DIVIDIR);
-                this.Factor();
-                this.Factor1();
-                break;
-
             case AND:
-                this.accept(Token.TokenType.AND);
+                this.Factor2();
                 this.Factor();
                 this.Factor1();
                 break;
 
             default:
+                break;
+        }
+    }
+
+    private void Factor2() {
+
+        switch (lookAhead.getTokenType()) {
+
+            case MULTIPLICAR:
+                this.accept(Token.TokenType.MULTIPLICAR);
+                break;
+
+            case DIVIDIR:
+                this.accept(Token.TokenType.DIVIDIR);
+                break;
+
+            case AND:
+                this.accept(Token.TokenType.AND);
+                break;
+
+            default:
+                //ERROR
                 break;
         }
     }
@@ -417,18 +445,13 @@ public class Syntactic {
 
     private void Variable2() {
 
-        switch (lookAhead.getTokenType()) {
+        this.Variable2_abr();
+        this.Exp();
+    }
 
-            case MES:
-            case MENYS:
-            case NOT:
-            case CTE_ENTERA:
-            case CTE_LOGICA:
-            case CTE_CADENA:
-            case PARENTESI_DAVANT:
-            case ID:
-                this.Exp();
-                break;
+    private void Variable2_abr() {
+
+        switch (lookAhead.getTokenType()) {
 
             case SI:
                 this.accept(Token.TokenType.SI);
@@ -438,11 +461,9 @@ public class Syntactic {
                 this.accept(Token.TokenType.INTERROGANT);
                 this.Exp();
                 this.accept(Token.TokenType.DOS_PUNTS);
-                this.Exp();
                 break;
 
             default:
-                //ERROR
                 break;
         }
     }
