@@ -1,0 +1,21 @@
+const LOOPS 5;
+
+var num SENCER;
+
+funcio var () : SENCER;
+var i : SENCER;
+func
+  i = 0;
+  mentre i < LOOPS fer
+    num = num + num;
+  fimentre;
+  retornar num;
+fifunc;
+
+prog
+  num = 2;
+  num = sumar ();
+fiprog
+
+num = num + num;
+
