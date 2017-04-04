@@ -106,7 +106,7 @@ public class SynchronizationSets {
 
         if (instance == null) {
 
-            synchronizationSets = new LinkedList[56];
+            synchronizationSets = new LinkedList[31];
             this.initiateSynchronizationSets();
 
             instance = this;
@@ -128,48 +128,25 @@ public class SynchronizationSets {
     private void initiateSynchronizationSets() {
 
         this.ssP();
-        this.ssDecl();
-        this.ssDeclA();
-        this.ssDeclCteVar();
         this.ssDecCte();
         this.ssDecVar();
         this.ssDecFun();
         this.ssDecFunA();
         this.ssDecFunB();
-        this.ssDecFunC();
-        this.ssDecFunD();
-        this.ssDecFunE();
         this.ssLlistaParam1();
-        this.ssLlistaParam1A();
-        this.ssLlistaParam1B();
         this.ssLlistaParam2();
         this.ssTipus();
         this.ssTipusAbr();
-        this.ssExp();
-        this.ssExpA();
-        this.ssExp1();
-        this.ssExpSimple();
-        this.ssExpSimpleA();
-        this.ssTerme1();
-        this.ssTerme1A();
         this.ssTerme();
         this.ssFactor1();
-        this.ssFactor1A();
         this.ssFactor();
         this.ssFactorA();
-        this.ssExp3();
-        this.ssExp4();
         this.ssVariable5();
         this.ssVariable();
         this.ssVariable1();
         this.ssLlistaInst();
         this.ssLlistaInstA();
-        this.ssVariable2();
-        this.ssVariable2A();
         this.ssVariable2Abr();
-        this.ssVariable3();
-        this.ssVariable3A();
-        this.ssVariable4();
         this.ssInst();
         this.ssInstA();
         this.ssInstB();
@@ -180,10 +157,7 @@ public class SynchronizationSets {
         this.ssInstG();
         this.ssInstH();
         this.ssInstI();
-        this.ssInstJ();
-        this.ssInst1();
-        this.ssExpEscriure();
-        this.ssExpEscriure1();
+        this.ssEOF();
     }
 
 
@@ -193,339 +167,183 @@ public class SynchronizationSets {
         synchronizationSets[0].addAll(Arrays.asList(FOLLOWS_P));
     }
 
-    private void ssDecl() {
-
-        synchronizationSets[1] = new LinkedList<>();
-        synchronizationSets[1].addAll(Arrays.asList(FIRST_DEC_FUN));
-    }
-
-    private void ssDeclA() {
-
-        synchronizationSets[2] = new LinkedList<>();
-        synchronizationSets[2].addAll(Arrays.asList(FOLLOWS_DECL));
-    }
-
-    private void ssDeclCteVar() {
-
-        synchronizationSets[3] = new LinkedList<>();
-        synchronizationSets[3].addAll(Arrays.asList(FOLLOWS_DECL_CTE_VAR));
-    }
-
     private void ssDecCte() {
 
-        synchronizationSets[4] = new LinkedList<>();
-        synchronizationSets[4].addAll(Arrays.asList(FOLLOWS_DEC_CTE));
+        synchronizationSets[1] = new LinkedList<>();
+        synchronizationSets[1].addAll(Arrays.asList(FOLLOWS_DEC_CTE));
     }
 
     private void ssDecVar() {
 
-        synchronizationSets[5] = new LinkedList<>();
-        synchronizationSets[5].addAll(Arrays.asList(FOLLOWS_DEC_VAR));
+        synchronizationSets[2] = new LinkedList<>();
+        synchronizationSets[2].addAll(Arrays.asList(FOLLOWS_DEC_VAR));
     }
 
     private void ssDecFun() {
 
-        synchronizationSets[6] = new LinkedList<>();
-        synchronizationSets[6].addAll(Arrays.asList(FIRST_LLISTA_PARAM));
+        synchronizationSets[3] = new LinkedList<>();
+        synchronizationSets[3].addAll(Arrays.asList(FIRST_LLISTA_PARAM));
     }
 
     private void ssDecFunA() {
 
-        synchronizationSets[7] = new LinkedList<>();
-        synchronizationSets[7].add(Token.TokenType.PARENTESI_DARRERE);
+        synchronizationSets[4] = new LinkedList<>();
+        synchronizationSets[4].addAll(Arrays.asList(FIRST_DECL_CTE_VAR));
     }
 
     private void ssDecFunB() {
 
-        synchronizationSets[8] = new LinkedList<>();
-        synchronizationSets[8].addAll(Arrays.asList(FIRST_DECL_CTE_VAR));
-    }
-
-    private void ssDecFunC() {
-
-        synchronizationSets[9] = new LinkedList<>();
-        synchronizationSets[9].add(Token.TokenType.FUNC);
-    }
-
-    private void ssDecFunD() {
-
-        synchronizationSets[10] = new LinkedList<>();
-        synchronizationSets[10].addAll(Arrays.asList(FIRST_DEC_FUN));
-    }
-
-    private void ssDecFunE() {
-
-        synchronizationSets[11] = new LinkedList<>();
-        synchronizationSets[11].addAll(Arrays.asList(FOLLOWS_DEC_FUN));
+        synchronizationSets[5] = new LinkedList<>();
+        synchronizationSets[5].addAll(Arrays.asList(FIRST_DEC_FUN));
     }
 
     private void ssLlistaParam1() {
 
-        synchronizationSets[12] = new LinkedList<>();
-        synchronizationSets[12].addAll(Arrays.asList(FIRST_TIPUS));
-    }
-
-    private void ssLlistaParam1A() {
-
-        synchronizationSets[13] = new LinkedList<>();
-        synchronizationSets[13].addAll(Arrays.asList(FIRST_LLISTA_PARAM2));
-    }
-
-    private void ssLlistaParam1B() {
-
-        synchronizationSets[14] = new LinkedList<>();
-        synchronizationSets[14].addAll(Arrays.asList(FOLLOWS_LLISTA_PARAM1));
+        synchronizationSets[6] = new LinkedList<>();
+        synchronizationSets[6].addAll(Arrays.asList(FIRST_TIPUS));
     }
 
     private void ssLlistaParam2() {
 
-        synchronizationSets[15] = new LinkedList<>();
-        synchronizationSets[15].addAll(Arrays.asList(FOLLOWS_LLISTA_PARAM2));
+        synchronizationSets[7] = new LinkedList<>();
+        synchronizationSets[7].addAll(Arrays.asList(FOLLOWS_LLISTA_PARAM2));
     }
 
     private void ssTipus() {
 
-        synchronizationSets[16] = new LinkedList<>();
-        synchronizationSets[16].addAll(Arrays.asList(FOLLOWS_TIPUS));
+        synchronizationSets[8] = new LinkedList<>();
+        synchronizationSets[8].addAll(Arrays.asList(FOLLOWS_TIPUS));
     }
 
     private void ssTipusAbr() {
 
-        synchronizationSets[17] = new LinkedList<>();
-        synchronizationSets[17].addAll(Arrays.asList(FOLLOWS_TIPUS_ABR));
-    }
-
-    private void ssExp() {
-
-        synchronizationSets[18] = new LinkedList<>();
-        synchronizationSets[18].addAll(Arrays.asList(FIRST_EXP1));
-    }
-
-    private void ssExpA() {
-
-        synchronizationSets[19] = new LinkedList<>();
-        synchronizationSets[19].addAll(Arrays.asList(FOLLOWS_EXP));
-    }
-
-    private void ssExp1() {
-
-        synchronizationSets[20] = new LinkedList<>();
-        synchronizationSets[20].addAll(Arrays.asList(FOLLOWS_EXP1));
-    }
-
-    private void ssExpSimple() {
-
-        synchronizationSets[21] = new LinkedList<>();
-        synchronizationSets[21].addAll(Arrays.asList(FIRST_TERME1));
-    }
-
-    private void ssExpSimpleA() {
-
-        synchronizationSets[22] = new LinkedList<>();
-        synchronizationSets[22].addAll(Arrays.asList(FOLLOWS_EXP_SIMPLE));
-    }
-
-    private void ssTerme1() {
-
-        synchronizationSets[23] = new LinkedList<>();
-        synchronizationSets[23].addAll(Arrays.asList(FIRST_TERME1));
-    }
-
-    private void ssTerme1A() {
-
-        synchronizationSets[24] = new LinkedList<>();
-        synchronizationSets[24].addAll(Arrays.asList(FOLLOWS_TERME1));
+        synchronizationSets[9] = new LinkedList<>();
+        synchronizationSets[9].addAll(Arrays.asList(FOLLOWS_TIPUS_ABR));
     }
 
     private void ssTerme() {
 
-        synchronizationSets[25] = new LinkedList<>();
-        synchronizationSets[25].addAll(Arrays.asList(FOLLOWS_TERME));
+        synchronizationSets[10] = new LinkedList<>();
+        synchronizationSets[10].addAll(Arrays.asList(FIRST_FACTOR1));
     }
 
     private void ssFactor1() {
 
-        synchronizationSets[26] = new LinkedList<>();
-        synchronizationSets[26].addAll(Arrays.asList(FIRST_FACTOR1));
-    }
-
-    private void ssFactor1A() {
-
-        synchronizationSets[27] = new LinkedList<>();
-        synchronizationSets[27].addAll(Arrays.asList(FOLLOWS_FACTOR1));
+        synchronizationSets[11] = new LinkedList<>();
+        synchronizationSets[11].addAll(Arrays.asList(FIRST_FACTOR1));
     }
 
     private void ssFactor() {
 
-        synchronizationSets[28] = new LinkedList<>();
-        synchronizationSets[28].addAll(Arrays.asList(FOLLOWS_FACTOR));
+        synchronizationSets[12] = new LinkedList<>();
+        synchronizationSets[12].addAll(Arrays.asList(FOLLOWS_FACTOR));
     }
 
     private void ssFactorA() {
 
-        synchronizationSets[29] = new LinkedList<>();
-        synchronizationSets[29].addAll(Arrays.asList(FOLLOWS_FACTOR));
-    }
-
-    private void ssExp3() {
-
-        synchronizationSets[30] = new LinkedList<>();
-        synchronizationSets[30].addAll(Arrays.asList(FOLLOWS_EXP3));
-    }
-
-    private void ssExp4() {
-
-        synchronizationSets[31] = new LinkedList<>();
-        synchronizationSets[31].addAll(Arrays.asList(FOLLOWS_EXP4));
+        synchronizationSets[13] = new LinkedList<>();
+        synchronizationSets[13].addAll(Arrays.asList(FOLLOWS_FACTOR));
     }
 
     private void ssVariable5() {
 
-        synchronizationSets[32] = new LinkedList<>();
-        synchronizationSets[32].addAll(Arrays.asList(FOLLOWS_VARIABLE5));
+        synchronizationSets[14] = new LinkedList<>();
+        synchronizationSets[14].addAll(Arrays.asList(FOLLOWS_VARIABLE5));
     }
 
     private void ssVariable() {
 
-        synchronizationSets[33] = new LinkedList<>();
-        synchronizationSets[33].addAll(Arrays.asList(FOLLOWS_VARIABLE));
+        synchronizationSets[15] = new LinkedList<>();
+        synchronizationSets[15].addAll(Arrays.asList(FIRST_VARIABLE1));
     }
 
     private void ssVariable1() {
 
-        synchronizationSets[34] = new LinkedList<>();
-        synchronizationSets[34].addAll(Arrays.asList(FOLLOWS_VARIABLE1));
+        synchronizationSets[16] = new LinkedList<>();
+        synchronizationSets[16].addAll(Arrays.asList(FOLLOWS_VARIABLE1));
     }
 
     private void ssLlistaInst() {
 
-        synchronizationSets[35] = new LinkedList<>();
-        synchronizationSets[35].addAll(Arrays.asList(FIRST_LLISTA_INST1));
+        synchronizationSets[17] = new LinkedList<>();
+        synchronizationSets[17].add(Token.TokenType.PUNT_COMA);
     }
 
     private void ssLlistaInstA() {
 
-        synchronizationSets[36] = new LinkedList<>();
-        synchronizationSets[36].addAll(Arrays.asList(FOLLOWS_LLISTA_INST));
-    }
-
-    private void ssVariable2() {
-
-        synchronizationSets[37] = new LinkedList<>();
-        synchronizationSets[37].addAll(Arrays.asList(FIRST_EXP));
-    }
-
-    private void ssVariable2A() {
-
-        synchronizationSets[38] = new LinkedList<>();
-        synchronizationSets[38].addAll(Arrays.asList(FOLLOWS_VARIABLE2));
+        synchronizationSets[18] = new LinkedList<>();
+        synchronizationSets[18].addAll(Arrays.asList(FIRST_LLISTA_INST1));
     }
 
     private void ssVariable2Abr() {
 
-        synchronizationSets[39] = new LinkedList<>();
-        synchronizationSets[39].addAll(Arrays.asList(FOLLOWS_VARIABLE2_ABR));
-    }
-
-    private void ssVariable3() {
-
-        synchronizationSets[40] = new LinkedList<>();
-        synchronizationSets[40].addAll(Arrays.asList(FIRST_VARIABLE4));
-    }
-
-    private void ssVariable3A() {
-
-        synchronizationSets[41] = new LinkedList<>();
-        synchronizationSets[41].addAll(Arrays.asList(FOLLOWS_VARIABLE3));
-    }
-
-    private void ssVariable4() {
-
-        synchronizationSets[42] = new LinkedList<>();
-        synchronizationSets[42].addAll(Arrays.asList(FOLLOWS_VARIABLE4));
+        synchronizationSets[19] = new LinkedList<>();
+        synchronizationSets[19].addAll(Arrays.asList(FOLLOWS_VARIABLE2_ABR));
     }
 
     private void ssInst() {
 
-        synchronizationSets[43] = new LinkedList<>();
-        synchronizationSets[43].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[20] = new LinkedList<>();
+        synchronizationSets[20].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstA() {
 
-        synchronizationSets[44] = new LinkedList<>();
-        synchronizationSets[44].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[21] = new LinkedList<>();
+        synchronizationSets[21].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstB() {
 
-        synchronizationSets[45] = new LinkedList<>();
-        synchronizationSets[45].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[22] = new LinkedList<>();
+        synchronizationSets[22].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstC() {
 
-        synchronizationSets[46] = new LinkedList<>();
-        synchronizationSets[46].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[23] = new LinkedList<>();
+        synchronizationSets[23].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstD() {
 
-        synchronizationSets[47] = new LinkedList<>();
-        synchronizationSets[47].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[24] = new LinkedList<>();
+        synchronizationSets[24].addAll(Arrays.asList(FIRST_LLISTA_INST));
     }
 
     private void ssInstE() {
 
-        synchronizationSets[48] = new LinkedList<>();
-        synchronizationSets[48].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[25] = new LinkedList<>();
+        synchronizationSets[25].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstF() {
 
-        synchronizationSets[49] = new LinkedList<>();
-        synchronizationSets[49].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[26] = new LinkedList<>();
+        synchronizationSets[26].addAll(Arrays.asList(FIRST_LLISTA_INST));
     }
 
     private void ssInstG() {
 
-        synchronizationSets[50] = new LinkedList<>();
-        synchronizationSets[50].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[27] = new LinkedList<>();
+        synchronizationSets[27].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
     private void ssInstH() {
 
-        synchronizationSets[51] = new LinkedList<>();
-        synchronizationSets[51].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[28] = new LinkedList<>();
+        synchronizationSets[28].addAll(Arrays.asList(FIRST_LLISTA_INST));
     }
 
     private void ssInstI() {
 
-        synchronizationSets[52] = new LinkedList<>();
-        synchronizationSets[52].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[29] = new LinkedList<>();
+        synchronizationSets[29].addAll(Arrays.asList(FOLLOWS_INST));
     }
 
-    private void ssInstJ() {
+    private void ssEOF() {
 
-        synchronizationSets[53] = new LinkedList<>();
-        synchronizationSets[53].addAll(Arrays.asList(FOLLOWS_INST));
-    }
-
-    private void ssInst1() {
-
-        synchronizationSets[54] = new LinkedList<>();
-        synchronizationSets[54].addAll(Arrays.asList(FOLLOWS_INST1));
-    }
-
-    private void ssExpEscriure() {
-
-        synchronizationSets[55] = new LinkedList<>();
-        synchronizationSets[55].addAll(Arrays.asList(FOLLOWS_EXP_ESCRIURE));
-    }
-
-    private void ssExpEscriure1() {
-
-        synchronizationSets[56] = new LinkedList<>();
-        synchronizationSets[56].addAll(Arrays.asList(FOLLOWS_EXP_ESCRIURE1));
+        synchronizationSets[30] = new LinkedList<>();
+        synchronizationSets[30].add(Token.TokenType.EOF);
     }
 }

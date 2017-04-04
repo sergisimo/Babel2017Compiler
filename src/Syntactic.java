@@ -1,5 +1,9 @@
 /* **************************** IMPORTS *****************************/
 
+import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
+
+import java.util.LinkedList;
+
 /**
  * Classe que implementa l'analitzador sintàctic del compilador de Babel2017.
  *
@@ -21,6 +25,7 @@ public class Syntactic {
         if (instance == null) {
             new Error(fileName);
             new Lexicographical(fileName);
+            new SynchronizationSets();
 
             instance = this;
         }
@@ -41,18 +46,35 @@ public class Syntactic {
         this.P();
     }
 
-    private void accept (Token.TokenType tokenType) {
+    private void accept (Token.TokenType tokenType) throws ParseException {
 
         if (tokenType == lookAhead.getTokenType()) lookAhead = Lexicographical.getInstance().getToken();
-        else ;//ERROR
+        else throw new ParseException(lookAhead.getLexeme(), 0);
+    }
+
+    private void consume(LinkedList<Token.TokenType> tokenList) {
+
+        while (!tokenList.contains(lookAhead.getTokenType())) lookAhead = Lexicographical.getInstance().getToken();
     }
 
     private void P() {
 
-        this.Decl();
-        this.accept(Token.TokenType.PROG);
-        this.Llista_Inst();
-        this.accept(Token.TokenType.FIPROG);
+        try {
+            this.Decl();
+            this.accept(Token.TokenType.PROG);
+            this.Llista_Inst();
+            this.accept(Token.TokenType.FIPROG);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(10, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[0]);
+        }
+
+        try {
+            this.accept(Token.TokenType.EOF);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(7, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[30]);
+        }
     }
 
     private void Decl() {
@@ -86,29 +108,35 @@ public class Syntactic {
             case VAR:
                 this.Dec_Var();
                 break;
-
-            default:
-                //ERROR
-                break;
         }
     }
 
     private void Dec_Cte() {
 
         this.accept(Token.TokenType.CONST);
-        this.accept(Token.TokenType.ID);
-        this.accept(Token.TokenType.IGUAL);
-        this.Exp();
-        this.accept(Token.TokenType.PUNT_COMA);
+        try {
+            this.accept(Token.TokenType.ID);
+            this.accept(Token.TokenType.IGUAL);
+            this.Exp();
+            this.accept(Token.TokenType.PUNT_COMA);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(4, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[1]);
+        }
     }
 
     private void Dec_Var() {
 
         this.accept(Token.TokenType.VAR);
-        this.accept(Token.TokenType.ID);
-        this.accept(Token.TokenType.DOS_PUNTS);
-        this.Tipus();
-        this.accept(Token.TokenType.PUNT_COMA);
+        try {
+            this.accept(Token.TokenType.ID);
+            this.accept(Token.TokenType.DOS_PUNTS);
+            this.Tipus();
+            this.accept(Token.TokenType.PUNT_COMA);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(5, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[2]);
+        }
     }
 
     private void Dec_Fun() {
@@ -117,18 +145,37 @@ public class Syntactic {
 
             case FUNCIO:
                 this.accept(Token.TokenType.FUNCIO);
-                this.accept(Token.TokenType.ID);
-                this.accept(Token.TokenType.PARENTESI_DAVANT);
+
+                try {
+                    this.accept(Token.TokenType.ID);
+                    this.accept(Token.TokenType.PARENTESI_DAVANT);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(2, Lexicographical.getInstance().getActualLine(), "id", "(", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[3]);
+                }
+
                 this.Llista_Param();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
-                this.accept(Token.TokenType.DOS_PUNTS);
-                this.accept(Token.TokenType.TIPUS_SIMPLE);
-                this.accept(Token.TokenType.PUNT_COMA);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                    this.accept(Token.TokenType.DOS_PUNTS);
+                    this.accept(Token.TokenType.TIPUS_SIMPLE);
+                    this.accept(Token.TokenType.PUNT_COMA);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(12, Lexicographical.getInstance().getActualLine());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[4]);
+                }
+
                 this.Decl_Cte_Var();
-                this.accept(Token.TokenType.FUNC);
-                this.Llista_Inst();
-                this.accept(Token.TokenType.FIFUNC);
-                this.accept(Token.TokenType.PUNT_COMA);
+                try {
+                    this.accept(Token.TokenType.FUNC);
+                    this.Llista_Inst();
+                    this.accept(Token.TokenType.FIFUNC);
+                    this.accept(Token.TokenType.PUNT_COMA);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(13, Lexicographical.getInstance().getActualLine());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[5]);
+                }
+
                 this.Dec_Fun();
                 break;
 
@@ -154,8 +201,13 @@ public class Syntactic {
     private void Llista_Param1() {
 
         this.PasValor();
-        this.accept(Token.TokenType.ID);
-        this.accept(Token.TokenType.DOS_PUNTS);
+        try {
+            this.accept(Token.TokenType.ID);
+            this.accept(Token.TokenType.DOS_PUNTS);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(2, Lexicographical.getInstance().getActualLine(), "id", ":", lookAhead.getLexeme());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[6]);
+        }
         this.Tipus();
         this.Llista_Param2();
     }
@@ -166,7 +218,12 @@ public class Syntactic {
 
             case COMA:
                 this.accept(Token.TokenType.COMA);
-                this.Llista_Param1();
+                try {
+                    this.Llista_Param1();
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(2, Lexicographical.getInstance().getActualLine(), "perref", "perval", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[7]);
+                }
                 break;
 
             default:
@@ -174,7 +231,7 @@ public class Syntactic {
         }
     }
 
-    private void PasValor() {
+    private void PasValor() throws ParseException{
 
         switch (lookAhead.getTokenType()) {
 
@@ -187,15 +244,19 @@ public class Syntactic {
                 break;
 
             default:
-                //ERROR
-                break;
+                throw new ParseException(lookAhead.getLexeme(), 1);
         }
     }
 
     private void Tipus() {
 
         this.Tipus_Abr();
-        this.accept(Token.TokenType.TIPUS_SIMPLE);
+        try {
+            this.accept(Token.TokenType.TIPUS_SIMPLE);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "tipus_simple", lookAhead.getLexeme());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[8]);
+        }
     }
 
     private void Tipus_Abr() {
@@ -204,12 +265,17 @@ public class Syntactic {
 
             case VECTOR:
                 this.accept(Token.TokenType.VECTOR);
-                this.accept(Token.TokenType.CLAUDATOR_DAVANT);
-                this.Exp();
-                this.accept(Token.TokenType.PUNT_PUNT);
-                this.Exp();
-                this.accept(Token.TokenType.CLAUDATOR_DARRERE);
-                this.accept(Token.TokenType.DE);
+                try {
+                    this.accept(Token.TokenType.CLAUDATOR_DAVANT);
+                    this.Exp();
+                    this.accept(Token.TokenType.PUNT_PUNT);
+                    this.Exp();
+                    this.accept(Token.TokenType.CLAUDATOR_DARRERE);
+                    this.accept(Token.TokenType.DE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(15, Lexicographical.getInstance().getActualLine());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[9]);
+                }
                 break;
 
             default:
@@ -307,7 +373,12 @@ public class Syntactic {
 
     private void Terme() {
 
-        this.Factor();
+        try {
+            this.Factor();
+        } catch (ParseException e) {
+            Error.getInstance().writeError(18, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[10]);
+        }
         this.Factor1();
     }
 
@@ -343,14 +414,10 @@ public class Syntactic {
             case OR:
                 this.accept(Token.TokenType.OR);
                 break;
-
-            default:
-                //ERROR
-                break;
         }
     }
 
-    private void Factor() {
+    private void Factor() throws ParseException {
 
         switch (lookAhead.getTokenType()) {
 
@@ -369,17 +436,26 @@ public class Syntactic {
             case PARENTESI_DAVANT:
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
                 this.Exp();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), ")", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[12]);
+                }
                 break;
 
             case ID:
                 this.accept(Token.TokenType.ID);
-                this.Variable5();
+                try {
+                    this.Variable5();
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(16, Lexicographical.getInstance().getActualLine());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[13]);
+                }
                 break;
 
             default:
-                //ERROR
-                break;
+                throw new ParseException(lookAhead.getLexeme(), 1);
         }
     }
 
@@ -391,7 +467,13 @@ public class Syntactic {
             case DIVIDIR:
             case AND:
                 this.Factor2();
-                this.Factor();
+                try {
+                    this.Factor();
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(18, Lexicographical.getInstance().getActualLine());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[11]);
+                }
+
                 this.Factor1();
                 break;
 
@@ -415,16 +497,17 @@ public class Syntactic {
             case AND:
                 this.accept(Token.TokenType.AND);
                 break;
-
-            default:
-                //ERROR
-                break;
         }
     }
 
     private void Variable() {
 
-        this.accept(Token.TokenType.ID);
+        try {
+            this.accept(Token.TokenType.ID);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "id", lookAhead.getLexeme());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[15]);
+        }
         this.Variable1();
     }
 
@@ -435,7 +518,12 @@ public class Syntactic {
             case CLAUDATOR_DAVANT:
                 this.accept(Token.TokenType.CLAUDATOR_DAVANT);
                 this.Exp();
-                this.accept(Token.TokenType.CLAUDATOR_DARRERE);
+                try {
+                    this.accept(Token.TokenType.CLAUDATOR_DARRERE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "]", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[16]);
+                }
                 break;
 
             default:
@@ -455,12 +543,17 @@ public class Syntactic {
 
             case SI:
                 this.accept(Token.TokenType.SI);
-                this.accept(Token.TokenType.PARENTESI_DAVANT);
-                this.Exp();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
-                this.accept(Token.TokenType.INTERROGANT);
-                this.Exp();
-                this.accept(Token.TokenType.DOS_PUNTS);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DAVANT);
+                    this.Exp();
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                    this.accept(Token.TokenType.INTERROGANT);
+                    this.Exp();
+                    this.accept(Token.TokenType.DOS_PUNTS);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(8, Lexicographical.getInstance().getActualLine(), "Condicional Ternari");
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[19]);
+                }
                 break;
 
             default:
@@ -488,14 +581,19 @@ public class Syntactic {
         }
     }
 
-    private void Variable5() {
+    private void Variable5() throws ParseException {
 
         switch (lookAhead.getTokenType()) {
 
             case PARENTESI_DAVANT:
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
                 this.Exp2();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), ")", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[14]);
+                }
                 break;
 
             case CLAUDATOR_DAVANT:
@@ -519,15 +617,26 @@ public class Syntactic {
                 break;
 
             default:
-                //ERROR
-                break;
+                throw new ParseException(lookAhead.getLexeme(), 1);
         }
     }
 
     private void Llista_Inst() {
 
-        this.Inst();
-        this.accept(Token.TokenType.PUNT_COMA);
+        try {
+            this.Inst();
+        } catch (ParseException e) {
+            Error.getInstance().writeError(17, Lexicographical.getInstance().getActualLine());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[17]);
+        }
+
+        try {
+            this.accept(Token.TokenType.PUNT_COMA);
+        } catch (ParseException e) {
+            Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), ";", lookAhead.getLexeme());
+            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[18]);
+        }
+
         this.Llista_Inst1();
     }
 
@@ -551,52 +660,94 @@ public class Syntactic {
         }
     }
 
-    private void Inst() {
+    private void Inst() throws ParseException {
 
         switch (lookAhead.getTokenType()) {
 
             case ID:
                 this.Variable();
-                this.accept(Token.TokenType.IGUAL);
+                try {
+                    this.accept(Token.TokenType.IGUAL);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "=", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[20]);
+                }
                 this.Variable2();
                 break;
 
             case ESCRIURE:
                 this.accept(Token.TokenType.ESCRIURE);
-                this.accept(Token.TokenType.PARENTESI_DAVANT);
-                this.ExpEscriure();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DAVANT);
+                    this.ExpEscriure();
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(8, Lexicographical.getInstance().getActualLine(), "escriure");
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[21]);
+                }
                 break;
 
             case LLEGIR:
                 this.accept(Token.TokenType.LLEGIR);
-                this.accept(Token.TokenType.PARENTESI_DAVANT);
-                this.Variable3();
-                this.accept(Token.TokenType.PARENTESI_DARRERE);
+                try {
+                    this.accept(Token.TokenType.PARENTESI_DAVANT);
+                    this.Variable3();
+                    this.accept(Token.TokenType.PARENTESI_DARRERE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(8, Lexicographical.getInstance().getActualLine(), "llegir");
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[22]);
+                }
                 break;
 
             case CICLE:
                 this.accept(Token.TokenType.CICLE);
-                this.Llista_Inst();
-                this.accept(Token.TokenType.FINS);
-                this.Exp();
+                try {
+                    this.Llista_Inst();
+                    this.accept(Token.TokenType.FINS);
+                    this.Exp();
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(8, Lexicographical.getInstance().getActualLine(), "cicle");
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[23]);
+                }
                 break;
 
             case MENTRE:
                 this.accept(Token.TokenType.MENTRE);
                 this.Exp();
-                this.accept(Token.TokenType.FER);
+                try {
+                    this.accept(Token.TokenType.FER);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "fer", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[24]);
+                }
+
                 this.Llista_Inst();
-                this.accept(Token.TokenType.FIMENTRE);
+                try {
+                    this.accept(Token.TokenType.FIMENTRE);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "fimentre", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[25]);
+                }
                 break;
 
             case SI:
                 this.accept(Token.TokenType.SI);
                 this.Exp();
-                this.accept(Token.TokenType.LLAVORS);
+                try {
+                    this.accept(Token.TokenType.LLAVORS);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "llavors", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[26]);
+                }
+
                 this.Llista_Inst();
                 this.Inst1();
-                this.accept(Token.TokenType.FISI);
+                try {
+                    this.accept(Token.TokenType.FISI);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "fisi", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[27]);
+                }
                 break;
 
             case RETORNAR:
@@ -606,17 +757,27 @@ public class Syntactic {
 
             case PERCADA:
                 this.accept(Token.TokenType.PERCADA);
-                this.accept(Token.TokenType.ID);
-                this.accept(Token.TokenType.EN);
-                this.accept(Token.TokenType.ID);
-                this.accept(Token.TokenType.FER);
+                try {
+                    this.accept(Token.TokenType.ID);
+                    this.accept(Token.TokenType.EN);
+                    this.accept(Token.TokenType.ID);
+                    this.accept(Token.TokenType.FER);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(8, Lexicographical.getInstance().getActualLine(), "percada");
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[28]);
+                }
+
                 this.Llista_Inst();
-                this.accept(Token.TokenType.FIPER);
+                try {
+                    this.accept(Token.TokenType.FIPER);
+                } catch (ParseException e) {
+                    Error.getInstance().writeError(14, Lexicographical.getInstance().getActualLine(), "fiper", lookAhead.getLexeme());
+                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[29]);
+                }
                 break;
 
             default:
-                //ERROR
-                break;
+                throw new ParseException(lookAhead.getLexeme(), 1);
         }
     }
 

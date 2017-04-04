@@ -19,7 +19,24 @@ public class Error {
 
     private static final String[] ERRORS = {
             "[ERR_LEX_1] %d, Caràcter %c desconegut",
-            "[ERR_LEX_2] %d, Els delimitadors de la constant cadena [\"] no estan tancats"
+            "[ERR_LEX_2] %d, Els delimitadors de la constant cadena [\"] no estan tancats",
+            "[ERR_SIN_1] %d, S'esperaven els tokens [%s, %s] però ha aparegut en l'entrada el token [%s]",
+            "[ERR_SIN_2] %d, Oblit del token [%s]",
+            "[ERR_SIN_3] %d, La construcció de la declaració de la constant no és correcta",
+            "[ERR_SIN_4] %d, La construcció de la declaració de la variable no és correcta",
+            "[ERR_SIN_5] %d, La capçalera de la funció conté errors",
+            "[ERR_SIN_6] %d, Hi ha codi després de la fi del programa",
+            "[ERR_SIN_7] %d, Construcció d'instrucció [%s] incorrecta",
+            "[ERR_SIN_8] %d, Expressió incompleta: s'esperava [%s, %s] i ha aparegut [%s]",
+            "[ERR_SIN_9] %d, El procediment principal conté errors",
+            "[ERR_SIN_10] %d, La llista de paràmetres de la declaració de la funció conté errors",
+            "[ERR_SIN_11] %d, La especificació del retorn de la funció conté errors",
+            "[ERR_SIN_12] %d, Construcció de funció incorrecte",
+            "[ERR_SIN_13] %d, S'esperaven el token [%s] però ha aparegut en l'entrada el token [%s]",
+            "[ERR_SIN_14] %d, La declaració del vector conté errors",
+            "[ERR_SIN_15] %d, La crida a la funció conté errors",
+            "[ERR_SIN_16] %d, Instrucció no vàlida",
+            "[ERR_SIN_17] %d, L'operand de la operació conté errors"
     };
 
 
