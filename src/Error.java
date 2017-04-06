@@ -34,9 +34,13 @@ public class Error {
             "[ERR_SIN_12] %d, Construcció de funció incorrecte",
             "[ERR_SIN_13] %d, S'esperaven el token [%s] però ha aparegut en l'entrada el token [%s]",
             "[ERR_SIN_14] %d, La declaració del vector conté errors",
-            "[ERR_SIN_15] %d, La crida a la funció conté errors",
+            "[ERR_SIN_15] %d, Error en la Declaració",
             "[ERR_SIN_16] %d, Instrucció no vàlida",
-            "[ERR_SIN_17] %d, L'operand de la operació conté errors"
+            "[ERR_SIN_17] %d, L'operand de la operació conté errors",
+            "[ERR_SIN_18] %d, ERROR GENERIC",
+            "[ERR_SIN_19] %d, S'esperaven el token [ID o fer] però ha aparegut en l'entrada el token [%s]",
+            "[ERR_SIN_20] %d, Error en la declaració de la variable",
+            "[ERR_SIN_21] %d, Error en la instrucció",
     };
 
 

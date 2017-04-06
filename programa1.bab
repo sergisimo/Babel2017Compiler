@@ -1,21 +1,50 @@
-const LOOPS 5;
-
-var num SENCER;
-
-funcio var () : SENCER;
 var i : SENCER;
+var i : vector [0 .. 10] de SENCER;
+const L = + jo / jo / jo;
+const i = + jo / jo [ i ];
+const i =  h [ i ];
+const L = + jo ( i , j , j );
+const L = + jo / ( i );
+const L = 10;
+const L = "HOLA";
+
+funcio suma (perref i: SENCER,perref i: SENCER) : SENCER;
+var i : SENCER;
+const L = 5;
+var i : vector [0 .. 10] de SENCER;
 func
-  i = 0;
-  mentre i < LOOPS fer
+  num = 0;
+
+  i =  si (i) ? g : f;
+
+  escriure ( i );
+
+  llegir ( i );
+
+  cicle
+    num = num +1;
+  fins num > 5;
+
+  mentre i fr
     num = num + num;
   fimentre;
-  retornar num;
+
+  si LOOPS llavors
+     num = num +1;
+  sino
+     num = num +1;
+  fisi;
+
+  percada num en num fer
+     num = num +1;
+  fiper;
+
+  retornar i;
 fifunc;
 
 prog
-  num = 2;
-  num = sumar ();
+  num = 10;
+  total = sumar ();
 fiprog
 
-num = num + num;
 

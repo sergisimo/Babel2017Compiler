@@ -106,7 +106,7 @@ public class SynchronizationSets {
 
         if (instance == null) {
 
-            synchronizationSets = new LinkedList[31];
+            synchronizationSets = new LinkedList[35];
             this.initiateSynchronizationSets();
 
             instance = this;
@@ -158,6 +158,10 @@ public class SynchronizationSets {
         this.ssInstH();
         this.ssInstI();
         this.ssEOF();
+        this.ssIniciCodi();
+        this.ssIniciFun();
+        this.ssRepetDec();
+        this.ssEndLine();
     }
 
 
@@ -165,185 +169,290 @@ public class SynchronizationSets {
 
         synchronizationSets[0] = new LinkedList<>();
         synchronizationSets[0].addAll(Arrays.asList(FOLLOWS_P));
+        synchronizationSets[0].add(Token.TokenType.EOF);
     }
 
     private void ssDecCte() {
 
         synchronizationSets[1] = new LinkedList<>();
         synchronizationSets[1].addAll(Arrays.asList(FOLLOWS_DEC_CTE));
+        synchronizationSets[1].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[1].add(Token.TokenType.EOF);
     }
 
     private void ssDecVar() {
 
         synchronizationSets[2] = new LinkedList<>();
         synchronizationSets[2].addAll(Arrays.asList(FOLLOWS_DEC_VAR));
+        synchronizationSets[2].add(Token.TokenType.ID);
+        synchronizationSets[2].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[2].add(Token.TokenType.EOF);
     }
 
     private void ssDecFun() {
 
         synchronizationSets[3] = new LinkedList<>();
         synchronizationSets[3].addAll(Arrays.asList(FIRST_LLISTA_PARAM));
+        synchronizationSets[3].add(Token.TokenType.EOF);
     }
 
     private void ssDecFunA() {
 
         synchronizationSets[4] = new LinkedList<>();
-        synchronizationSets[4].addAll(Arrays.asList(FIRST_DECL_CTE_VAR));
+        synchronizationSets[4].addAll(Arrays.asList(FIRST_EXP));
+        synchronizationSets[4].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[4].add(Token.TokenType.EOF);
     }
 
     private void ssDecFunB() {
 
         synchronizationSets[5] = new LinkedList<>();
         synchronizationSets[5].addAll(Arrays.asList(FIRST_DEC_FUN));
+        synchronizationSets[5].addAll(Arrays.asList(FOLLOWS_DEC_FUN));
+        synchronizationSets[5].add(Token.TokenType.PARENTESI_DAVANT);
+        synchronizationSets[5].add(Token.TokenType.EOF);
     }
 
     private void ssLlistaParam1() {
 
         synchronizationSets[6] = new LinkedList<>();
         synchronizationSets[6].addAll(Arrays.asList(FIRST_TIPUS));
+        synchronizationSets[6].addAll(Arrays.asList(FOLLOWS_TIPUS));
+        synchronizationSets[6].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[6].add(Token.TokenType.EOF);
     }
 
     private void ssLlistaParam2() {
 
         synchronizationSets[7] = new LinkedList<>();
         synchronizationSets[7].addAll(Arrays.asList(FOLLOWS_LLISTA_PARAM2));
+        synchronizationSets[7].addAll(Arrays.asList(FIRST_LLISTA_PARAM));
+        synchronizationSets[7].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[7].add(Token.TokenType.EOF);
     }
 
     private void ssTipus() {
 
         synchronizationSets[8] = new LinkedList<>();
         synchronizationSets[8].addAll(Arrays.asList(FOLLOWS_TIPUS));
+        synchronizationSets[8].addAll(Arrays.asList(FOLLOWS_LLISTA_PARAM2));
+        synchronizationSets[8].addAll(Arrays.asList(FIRST_DECL_CV));
+        synchronizationSets[8].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[8].add(Token.TokenType.EOF);
     }
 
     private void ssTipusAbr() {
 
         synchronizationSets[9] = new LinkedList<>();
-        synchronizationSets[9].addAll(Arrays.asList(FOLLOWS_TIPUS_ABR));
+        synchronizationSets[9].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[9].add(Token.TokenType.FIFUNC);
+        synchronizationSets[9].add(Token.TokenType.FIPROG);
+        synchronizationSets[9].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[9].add(Token.TokenType.EOF);
     }
 
     private void ssTerme() {
 
         synchronizationSets[10] = new LinkedList<>();
         synchronizationSets[10].addAll(Arrays.asList(FIRST_FACTOR1));
+        synchronizationSets[10].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[10].add(Token.TokenType.EOF);
     }
 
     private void ssFactor1() {
 
         synchronizationSets[11] = new LinkedList<>();
         synchronizationSets[11].addAll(Arrays.asList(FIRST_FACTOR1));
+        synchronizationSets[11].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[11].add(Token.TokenType.EOF);
     }
 
     private void ssFactor() {
 
         synchronizationSets[12] = new LinkedList<>();
-        synchronizationSets[12].addAll(Arrays.asList(FOLLOWS_FACTOR));
+        synchronizationSets[12].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[12].add(Token.TokenType.TIPUS_SIMPLE);
+        synchronizationSets[12].add(Token.TokenType.EOF);
     }
 
     private void ssFactorA() {
 
         synchronizationSets[13] = new LinkedList<>();
         synchronizationSets[13].addAll(Arrays.asList(FOLLOWS_FACTOR));
+        synchronizationSets[13].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[13].add(Token.TokenType.EOF);
     }
 
     private void ssVariable5() {
 
         synchronizationSets[14] = new LinkedList<>();
         synchronizationSets[14].addAll(Arrays.asList(FOLLOWS_VARIABLE5));
+        synchronizationSets[14].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[14].add(Token.TokenType.EOF);
     }
 
     private void ssVariable() {
 
         synchronizationSets[15] = new LinkedList<>();
         synchronizationSets[15].addAll(Arrays.asList(FIRST_VARIABLE1));
+        synchronizationSets[15].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[15].add(Token.TokenType.EOF);
     }
 
     private void ssVariable1() {
 
         synchronizationSets[16] = new LinkedList<>();
         synchronizationSets[16].addAll(Arrays.asList(FOLLOWS_VARIABLE1));
+        synchronizationSets[16].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[16].add(Token.TokenType.EOF);
     }
 
     private void ssLlistaInst() {
 
         synchronizationSets[17] = new LinkedList<>();
         synchronizationSets[17].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[17].addAll(Arrays.asList(FIRST_LLISTA_INST1));
+        synchronizationSets[17].add(Token.TokenType.EOF);
     }
 
     private void ssLlistaInstA() {
 
         synchronizationSets[18] = new LinkedList<>();
-        synchronizationSets[18].addAll(Arrays.asList(FIRST_LLISTA_INST1));
+        synchronizationSets[18].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[18].add(Token.TokenType.FIFUNC);
+        synchronizationSets[18].add(Token.TokenType.FIPROG);
+        synchronizationSets[18].add(Token.TokenType.EOF);
     }
 
     private void ssVariable2Abr() {
 
         synchronizationSets[19] = new LinkedList<>();
         synchronizationSets[19].addAll(Arrays.asList(FOLLOWS_VARIABLE2_ABR));
+        synchronizationSets[19].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[19].add(Token.TokenType.EOF);
     }
 
     private void ssInst() {
 
         synchronizationSets[20] = new LinkedList<>();
-        synchronizationSets[20].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[20].addAll(Arrays.asList(FIRST_VARIABLE2));
+        synchronizationSets[20].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[20].add(Token.TokenType.EOF);
     }
 
     private void ssInstA() {
 
         synchronizationSets[21] = new LinkedList<>();
         synchronizationSets[21].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[21].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[21].add(Token.TokenType.EOF);
     }
 
     private void ssInstB() {
 
         synchronizationSets[22] = new LinkedList<>();
         synchronizationSets[22].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[22].add(Token.TokenType.EOF);
     }
 
     private void ssInstC() {
 
         synchronizationSets[23] = new LinkedList<>();
         synchronizationSets[23].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[23].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[23].add(Token.TokenType.EOF);
     }
 
     private void ssInstD() {
 
         synchronizationSets[24] = new LinkedList<>();
         synchronizationSets[24].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[24].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[24].add(Token.TokenType.EOF);
     }
 
     private void ssInstE() {
 
         synchronizationSets[25] = new LinkedList<>();
         synchronizationSets[25].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[25].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[25].add(Token.TokenType.EOF);
     }
 
     private void ssInstF() {
 
         synchronizationSets[26] = new LinkedList<>();
         synchronizationSets[26].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[26].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[26].add(Token.TokenType.EOF);
     }
 
     private void ssInstG() {
 
         synchronizationSets[27] = new LinkedList<>();
         synchronizationSets[27].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[27].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[27].add(Token.TokenType.EOF);
     }
 
     private void ssInstH() {
 
         synchronizationSets[28] = new LinkedList<>();
         synchronizationSets[28].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[28].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[28].add(Token.TokenType.EOF);
     }
 
     private void ssInstI() {
 
         synchronizationSets[29] = new LinkedList<>();
         synchronizationSets[29].addAll(Arrays.asList(FOLLOWS_INST));
+        synchronizationSets[29].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[29].add(Token.TokenType.EOF);
     }
 
     private void ssEOF() {
 
         synchronizationSets[30] = new LinkedList<>();
         synchronizationSets[30].add(Token.TokenType.EOF);
+    }
+
+    private void ssIniciCodi() {
+
+        synchronizationSets[31] = new LinkedList<>();
+        synchronizationSets[31].add(Token.TokenType.VAR);
+        synchronizationSets[31].add(Token.TokenType.CONST);
+        synchronizationSets[31].add(Token.TokenType.FUNCIO);
+        synchronizationSets[31].add(Token.TokenType.PROG);
+        synchronizationSets[31].add(Token.TokenType.FUNC);
+        synchronizationSets[31].add(Token.TokenType.EOF);
+    }
+
+    private void ssIniciFun() {
+
+        synchronizationSets[32] = new LinkedList<>();
+        synchronizationSets[32].add(Token.TokenType.FUNCIO);
+        synchronizationSets[32].add(Token.TokenType.PROG);
+        synchronizationSets[32].add(Token.TokenType.EOF);
+    }
+
+    private void ssRepetDec() {
+
+        synchronizationSets[33] = new LinkedList<>();
+        synchronizationSets[33].add(Token.TokenType.VAR);
+        synchronizationSets[33].add(Token.TokenType.CONST);
+        synchronizationSets[33].add(Token.TokenType.FUNC);
+        synchronizationSets[33].add(Token.TokenType.PROG);
+        synchronizationSets[33].add(Token.TokenType.EOF);
+    }
+
+    private void ssEndLine() {
+
+        synchronizationSets[34] = new LinkedList<>();
+        synchronizationSets[34].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[34].add(Token.TokenType.VAR);
+        synchronizationSets[34].add(Token.TokenType.CONST);
+        synchronizationSets[34].add(Token.TokenType.FUNC);
+        synchronizationSets[34].add(Token.TokenType.EOF);
     }
 }
