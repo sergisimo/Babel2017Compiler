@@ -106,7 +106,7 @@ public class SynchronizationSets {
 
         if (instance == null) {
 
-            synchronizationSets = new LinkedList[35];
+            synchronizationSets = new LinkedList[36];
             this.initiateSynchronizationSets();
 
             instance = this;
@@ -162,6 +162,7 @@ public class SynchronizationSets {
         this.ssIniciFun();
         this.ssRepetDec();
         this.ssEndLine();
+        this.ssID();
     }
 
 
@@ -177,6 +178,7 @@ public class SynchronizationSets {
         synchronizationSets[1] = new LinkedList<>();
         synchronizationSets[1].addAll(Arrays.asList(FOLLOWS_DEC_CTE));
         synchronizationSets[1].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[1].add(Token.TokenType.FUNC);
         synchronizationSets[1].add(Token.TokenType.EOF);
     }
 
@@ -184,7 +186,7 @@ public class SynchronizationSets {
 
         synchronizationSets[2] = new LinkedList<>();
         synchronizationSets[2].addAll(Arrays.asList(FOLLOWS_DEC_VAR));
-        synchronizationSets[2].add(Token.TokenType.ID);
+        synchronizationSets[2].add(Token.TokenType.FUNC);
         synchronizationSets[2].add(Token.TokenType.PUNT_COMA);
         synchronizationSets[2].add(Token.TokenType.EOF);
     }
@@ -192,7 +194,8 @@ public class SynchronizationSets {
     private void ssDecFun() {
 
         synchronizationSets[3] = new LinkedList<>();
-        synchronizationSets[3].addAll(Arrays.asList(FIRST_LLISTA_PARAM));
+        synchronizationSets[3].add(Token.TokenType.DOS_PUNTS);
+        synchronizationSets[3].add(Token.TokenType.PUNT_COMA);
         synchronizationSets[3].add(Token.TokenType.EOF);
     }
 
@@ -247,6 +250,7 @@ public class SynchronizationSets {
         synchronizationSets[9].addAll(Arrays.asList(FIRST_LLISTA_INST));
         synchronizationSets[9].add(Token.TokenType.FIFUNC);
         synchronizationSets[9].add(Token.TokenType.FIPROG);
+        synchronizationSets[9].add(Token.TokenType.FIMENTRE);
         synchronizationSets[9].add(Token.TokenType.PUNT_COMA);
         synchronizationSets[9].add(Token.TokenType.EOF);
     }
@@ -279,6 +283,7 @@ public class SynchronizationSets {
 
         synchronizationSets[13] = new LinkedList<>();
         synchronizationSets[13].addAll(Arrays.asList(FOLLOWS_FACTOR));
+        synchronizationSets[13].addAll(Arrays.asList(FIRST_LLISTA_INST1));
         synchronizationSets[13].add(Token.TokenType.PUNT_COMA);
         synchronizationSets[13].add(Token.TokenType.EOF);
     }
@@ -318,9 +323,7 @@ public class SynchronizationSets {
     private void ssLlistaInstA() {
 
         synchronizationSets[18] = new LinkedList<>();
-        synchronizationSets[18].addAll(Arrays.asList(FIRST_LLISTA_INST));
-        synchronizationSets[18].add(Token.TokenType.FIFUNC);
-        synchronizationSets[18].add(Token.TokenType.FIPROG);
+        synchronizationSets[18].addAll(Arrays.asList(FIRST_LLISTA_INST1));
         synchronizationSets[18].add(Token.TokenType.EOF);
     }
 
@@ -358,24 +361,28 @@ public class SynchronizationSets {
     private void ssInstC() {
 
         synchronizationSets[23] = new LinkedList<>();
-        synchronizationSets[23].addAll(Arrays.asList(FOLLOWS_INST));
-        synchronizationSets[23].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[23].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[23].add(Token.TokenType.FUNC);
         synchronizationSets[23].add(Token.TokenType.EOF);
     }
 
     private void ssInstD() {
 
+
         synchronizationSets[24] = new LinkedList<>();
-        synchronizationSets[24].addAll(Arrays.asList(FIRST_LLISTA_INST));
         synchronizationSets[24].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[24].add(Token.TokenType.DOS_PUNTS);
+        synchronizationSets[24].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[24].add(Token.TokenType.FUNC);
         synchronizationSets[24].add(Token.TokenType.EOF);
     }
 
     private void ssInstE() {
 
         synchronizationSets[25] = new LinkedList<>();
-        synchronizationSets[25].addAll(Arrays.asList(FOLLOWS_INST));
         synchronizationSets[25].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[25].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[25].add(Token.TokenType.FUNC);
         synchronizationSets[25].add(Token.TokenType.EOF);
     }
 
@@ -384,6 +391,7 @@ public class SynchronizationSets {
         synchronizationSets[26] = new LinkedList<>();
         synchronizationSets[26].addAll(Arrays.asList(FIRST_LLISTA_INST));
         synchronizationSets[26].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[26].add(Token.TokenType.FUNC);
         synchronizationSets[26].add(Token.TokenType.EOF);
     }
 
@@ -454,5 +462,13 @@ public class SynchronizationSets {
         synchronizationSets[34].add(Token.TokenType.CONST);
         synchronizationSets[34].add(Token.TokenType.FUNC);
         synchronizationSets[34].add(Token.TokenType.EOF);
+    }
+
+    private void ssID() {
+
+        synchronizationSets[35] = new LinkedList<>();
+        synchronizationSets[35].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[35].add(Token.TokenType.PARENTESI_DAVANT);
+        synchronizationSets[35].add(Token.TokenType.EOF);
     }
 }
