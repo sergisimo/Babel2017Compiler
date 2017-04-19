@@ -30,7 +30,7 @@ public class Error {
             "[ERR_SIN_8] %d, Error en el pas de parametres de la funció",
             "[ERR_SIN_9] %d, Error al declarar el nom de la funció",
             "[ERR_SIN_10] %d, El procediment principal conté errors",
-            "[ERR_SIN_11] %d, Error en el retorn de la capçalera de la funció",
+            "[ERR_SIN_11] %d, Error,la especificació del retorn de la funció conté errors",
             "[ERR_SIN_12] %d, Construcció de funció incorrecte",
             "[ERR_SIN_13] %d, S'esperaven el token [%s] però ha aparegut en l'entrada el token [%s]",
             "[ERR_SIN_14] %d, Error, el tipus de vector ha de ser SENCER o LOGIC",
