@@ -1,7 +1,8 @@
+package syntactic;
 /* **************************** IMPORTS *****************************/
-
 import java.util.Arrays;
 import java.util.LinkedList;
+import lexicographical.Token;
 
 /**
  * Classe que implementa l'estructura on es guardaran tots els símbols directors.

@@ -1,7 +1,9 @@
-/* **************************** IMPORTS *****************************/
+package syntactic;/* **************************** IMPORTS *****************************/
 
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
-
+import lexicographical.Lexicographical;
+import utils.Error;
+import lexicographical.Token;
 import java.util.LinkedList;
 
 /**
@@ -16,9 +18,6 @@ public class Syntactic {
 
     /* ************************** ATTRIBUTES ***************************/
     private Token lookAhead;
-
-    private int numPagErrAct = 0;
-    private int numPagErrAnt = 0;
 
     private static Syntactic instance;
 
@@ -469,10 +468,10 @@ public class Syntactic {
                 //try {
                     this.Variable5();
                 /*} catch (ParseException e) {
-                    Error.getInstance().writeError(16, Lexicographical.getInstance().getActualLine());
-                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[34]);
-                    this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[23]);
-                    System.out.println(SynchronizationSets.getInstance().getSynchronizationSets()[23]);
+                    utils.Error.getInstance().writeError(16, lexicographical.Lexicographical.getInstance().getActualLine());
+                    this.consume(syntactic.SynchronizationSets.getInstance().getSynchronizationSets()[34]);
+                    this.consume(syntactic.SynchronizationSets.getInstance().getSynchronizationSets()[23]);
+                    System.out.println(syntactic.SynchronizationSets.getInstance().getSynchronizationSets()[23]);
                     System.out.println(lookAhead.getTokenType());
                 }*/
                 break;
@@ -556,7 +555,7 @@ public class Syntactic {
             this.Variable2_abr();
             this.Exp();
         } catch (ParseException e) {
-            //Error.getInstance().writeError(23, Lexicographical.getInstance().getActualLine());
+            //utils.Error.getInstance().writeError(23, lexicographical.Lexicographical.getInstance().getActualLine());
             this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[24]);
         }
 
@@ -652,14 +651,14 @@ public class Syntactic {
         }
 
         /*try {
-            this.accept(Token.TokenType.PUNT_COMA);
+            this.accept(lexicographical.Token.TokenType.PUNT_COMA);
         } catch (ParseException e) {
-            this.numPagErrAct = Lexicographical.getInstance().getActualLine();
+            this.numPagErrAct = lexicographical.Lexicographical.getInstance().getActualLine();
             if (!(numPagErrAct == numPagErrAnt)) {
-                Error.getInstance().writeError(23, Lexicographical.getInstance().getActualLine());
+                utils.Error.getInstance().writeError(23, lexicographical.Lexicographical.getInstance().getActualLine());
             }
-            this.numPagErrAnt = Lexicographical.getInstance().getActualLine();
-            this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[18]);
+            this.numPagErrAnt = lexicographical.Lexicographical.getInstance().getActualLine();
+            this.consume(syntactic.SynchronizationSets.getInstance().getSynchronizationSets()[18]);
         }*/
 
         this.Llista_Inst1();
@@ -859,7 +858,8 @@ public class Syntactic {
 
     private void errorPrincipi() {
 
-        boolean a = false;
+        boolean a;
+
         do {
             if (Token.TokenType.PUNT_COMA == lookAhead.getTokenType())
                 lookAhead = Lexicographical.getInstance().getToken();
@@ -872,7 +872,7 @@ public class Syntactic {
     /* *** MAIN PROVISIONAL ******/
     public static void main (String args[]) {
 
-        if (args.length != 1) System.out.println("Error! Parametres introduits incorrectement. [EX] \"java -jar Babel2017Compiler.jar programa1.bab\"");
+        if (args.length != 1) System.out.println("utils.Error! Parametres introduits incorrectement. [EX] \"java -jar Babel2017Compiler.jar programa1.bab\"");
         else {
             String[] auxFileName = args[0].split(".bab");
 

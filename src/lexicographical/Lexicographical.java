@@ -1,4 +1,6 @@
-/* **************************** IMPORTS *****************************/
+package lexicographical;/* **************************** IMPORTS *****************************/
+import utils.Error;
+
 import java.io.*;
 import java.util.LinkedList;
 
@@ -106,10 +108,10 @@ public class Lexicographical {
                 fileWritter = new PrintWriter(fileNameLex, "UTF-8");
 
             } catch (FileNotFoundException e) {
-                System.out.println("Error! El fitxer " + fileName + " no existeix.");
+                System.out.println("utils.Error! El fitxer " + fileName + " no existeix.");
                 exit(-1);
             } catch (UnsupportedEncodingException e) {
-                System.out.println("Error! El fitxer " + fileNameLex + " no s'ha pogut crear.");
+                System.out.println("utils.Error! El fitxer " + fileNameLex + " no s'ha pogut crear.");
                 exit(-1);
             }
 
@@ -125,7 +127,7 @@ public class Lexicographical {
     /* ************************* PUBLIC METHODS **************************/
     /**
      * Funció encarregade de executar el motor de l'analitzador fins que aquest extregui el següent token del document.
-     * @return El següent Token trobat en el programa que s'està compilant.
+     * @return El següent lexicographical.Token trobat en el programa que s'està compilant.
      */
     public Token getToken() {
 
@@ -160,7 +162,7 @@ public class Lexicographical {
         try {
             inputStream.close();
         } catch (IOException e) {
-            System.out.println("Error! No s'ha tancat correctament el fitxer .bab.");
+            System.out.println("utils.Error! No s'ha tancat correctament el fitxer .bab.");
             exit(-1);
         }
     }
@@ -493,12 +495,12 @@ public class Lexicographical {
 
         String[] auxFileName = args[0].split(".bab");
 
-        Lexicographical lex = new Lexicographical(auxFileName[0]);
-        Error error = new Error(auxFileName[0]);
-        Token aux;
+        lexicographical.Lexicographical lex = new lexicographical.Lexicographical(auxFileName[0]);
+        utils.Error error = new utils.Error(auxFileName[0]);
+        lexicographical.Token aux;
 
         aux = lex.getToken();
-        while (aux.getTokenType() != Token.TokenType.EOF) {
+        while (aux.getTokenType() != lexicographical.Token.TokenType.EOF) {
             aux = lex.getToken();
         }
 

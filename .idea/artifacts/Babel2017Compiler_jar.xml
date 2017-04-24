@@ -3,6 +3,9 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Babel2017Compiler_jar</output-path>
     <root id="archive" name="Babel2017Compiler.jar">
       <element id="module-output" name="Babel2017Compiler" />
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/META-INF/MANIFEST.MF" />
+      </element>
     </root>
   </artifact>
 </component>

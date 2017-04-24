@@ -1,8 +1,8 @@
 var i : SENCER;
-var i : vector [0  10] de SENCER;
+var a : LOGIC;
+var i : vector [0 .. 10] de SENCER;
 const L = + jo / jo / jo;
 const O = + jo / jo [ i ];
-var a : LOGIC;
 const P =  i [ i ];
 const T = + jo ( i , j , j );
 const C =  jo / ( i );
@@ -33,7 +33,7 @@ func
   fimentre;
 
   si a llavors
-     num2 = num  num1;
+     num2 = num + num1;
      num = num2;
   fisi;
 
@@ -51,5 +51,3 @@ prog
        num = num;
     fiper;
 fiprog
-
-

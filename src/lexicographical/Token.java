@@ -1,5 +1,7 @@
+package lexicographical;
+
 /**
- * Classe que permet guardar la informació referent a un Token.
+ * Classe que permet guardar la informació referent a un lexicographical.Token.
  *
  * @author Sergi Simó Bosquet - ls30685
  * @author Esteve Genovard Ferriol - ls30742
@@ -72,15 +74,12 @@ public class Token {
     /**
      * Consturcor buit de la classe token.
      */
-    public Token () {
-
-        lexeme = new String();
-    }
+    public Token () {}
 
     /* *********************** GETTERS & SETTERS ************************/
     /**
      * Getter del lexema.
-     * @return String que conté el lexema del Token.
+     * @return String que conté el lexema del lexicographical.Token.
      */
     public String getLexeme() {
 
@@ -88,8 +87,8 @@ public class Token {
     }
 
     /**
-     * Getter del tipus de Token.
-     * @return Stirng amb el tipus de token del Token.
+     * Getter del tipus de lexicographical.Token.
+     * @return Stirng amb el tipus de token del lexicographical.Token.
      */
     public TokenType getTokenType() {
 
@@ -98,7 +97,7 @@ public class Token {
 
     /**
      * Setter del lexema.
-     * @param lexeme String que conté el lexema que es vol assignar al Token.
+     * @param lexeme String que conté el lexema que es vol assignar al lexicographical.Token.
      */
     public void setLexeme(String lexeme) {
 
@@ -107,7 +106,7 @@ public class Token {
 
     /**
      * Setter del tipus de token.
-     * @param tokenType Stirng amb el tipus de token que es vol assignar al Token.
+     * @param tokenType Stirng amb el tipus de token que es vol assignar al lexicographical.Token.
      */
     public void setTokenType(TokenType tokenType) {
 
@@ -116,7 +115,7 @@ public class Token {
 
     /**
      * Setter del tipus de token a partir del lexema.
-     * @param lexeme String amb el lexeme del qual s'ha d'extreure el tipus de Token.
+     * @param lexeme String amb el lexeme del qual s'ha d'extreure el tipus de lexicographical.Token.
      */
     public void setTokenTypeFromLexeme(String lexeme) {
 

@@ -1,4 +1,4 @@
-/* **************************** IMPORTS *****************************/
+package utils;/* **************************** IMPORTS *****************************/
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,21 +21,21 @@ public class Error {
             "[ERR_LEX_1] %d, Caràcter %c desconegut",
             "[ERR_LEX_2] %d, Els delimitadors de la constant cadena [\"] no estan tancats",
             "[ERR_SIN_1] %d, ERROR en el retornar de la funció",
-            "[ERR_SIN_2] %d, Error en la capçalera del SI",
-            "[ERR_SIN_3] %d, Error, la declaració de la constant no és correcta",
-            "[ERR_SIN_4] %d, Error, la declaració de la variable no és correcta",
-            "[ERR_SIN_5] %d, Error en la capçalera del MENTRE",
+            "[ERR_SIN_2] %d, utils.Error en la capçalera del SI",
+            "[ERR_SIN_3] %d, utils.Error, la declaració de la constant no és correcta",
+            "[ERR_SIN_4] %d, utils.Error, la declaració de la variable no és correcta",
+            "[ERR_SIN_5] %d, utils.Error en la capçalera del MENTRE",
             "[ERR_SIN_6] %d, Hi ha codi després de la fi del programa",
             "[ERR_SIN_7] %d, Construcció d'instrucció [%s] incorrecta",
-            "[ERR_SIN_8] %d, Error en el pas de parametres de la funció",
-            "[ERR_SIN_9] %d, Error al declarar el nom de la funció",
+            "[ERR_SIN_8] %d, utils.Error en el pas de parametres de la funció",
+            "[ERR_SIN_9] %d, utils.Error al declarar el nom de la funció",
             "[ERR_SIN_10] %d, El procediment principal conté errors",
-            "[ERR_SIN_11] %d, Error,la especificació del retorn de la funció conté errors",
+            "[ERR_SIN_11] %d, utils.Error,la especificació del retorn de la funció conté errors",
             "[ERR_SIN_12] %d, Construcció de funció incorrecte",
             "[ERR_SIN_13] %d, S'esperaven el token [%s] però ha aparegut en l'entrada el token [%s]",
-            "[ERR_SIN_14] %d, Error, el tipus de vector ha de ser SENCER o LOGIC",
-            "[ERR_SIN_15] %d, Error en la declaració de la instrucció",
-            "[ERR_SIN_16] %d, Error, la declaració del vector no és correcta",
+            "[ERR_SIN_14] %d, utils.Error, el tipus de vector ha de ser SENCER o LOGIC",
+            "[ERR_SIN_15] %d, utils.Error en la declaració de la instrucció",
+            "[ERR_SIN_16] %d, utils.Error, la declaració del vector no és correcta",
             "[ERR_SIN_17] %d, L'operand de la operació conté errors",
             "[ERR_SIN_18] %d, ERROR falta declarar el tipus",
     };
@@ -46,13 +46,13 @@ public class Error {
     };
 
     /* ************************** ATTRIBUTES ***************************/
-    PrintWriter fileWritter; //Eina per escriure en el fitxer d'error.
+    private PrintWriter fileWritter; //Eina per escriure en el fitxer d'error.
 
     private static Error instance; //Instancia del singleton.
 
     /* ************************* CONSTRUCTORS ***************************/
     /**
-     * Constructor de la classe Error.
+     * Constructor de la classe utils.Error.
      * @param fileName String amb el nom del programa que s'està compilant.
      */
     public Error (String fileName) {
@@ -63,7 +63,7 @@ public class Error {
             try {
                 fileWritter = new PrintWriter(fileName, "UTF-8");
             } catch (IOException e) {
-                System.out.println("Error! El fitxer " + fileName + " no s'ha pogut crear.");
+                System.out.println("utils.Error! El fitxer " + fileName + " no s'ha pogut crear.");
                 exit(-1);
             }
 
