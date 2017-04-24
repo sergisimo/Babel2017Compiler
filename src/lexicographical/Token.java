@@ -74,7 +74,10 @@ public class Token {
     /**
      * Consturcor buit de la classe token.
      */
-    public Token () {}
+    public Token () {
+
+        lexeme = new String();
+    }
 
     /* *********************** GETTERS & SETTERS ************************/
     /**
