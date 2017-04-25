@@ -1,8 +1,10 @@
 package syntactic;
+
 /* **************************** IMPORTS *****************************/
+import lexicographical.Token;
+
 import java.util.Arrays;
 import java.util.LinkedList;
-import lexicographical.Token;
 
 /**
  * Classe que implementa l'estructura on es guardaran tots els símbols directors.
@@ -29,7 +31,7 @@ public class SynchronizationSets {
     private static Token.TokenType[] FIRST_LLISTA_PARAM2 = {Token.TokenType.COMA, Token.TokenType.PARENTESI_DARRERE};
     private static Token.TokenType[] FIRST_TIPUS = {Token.TokenType.VECTOR, Token.TokenType.TIPUS_SIMPLE};
     private static Token.TokenType[] FIRST_TIPUS_ABR = {Token.TokenType.VECTOR, Token.TokenType.TIPUS_SIMPLE};
-    private static Token.TokenType[] FIRST_EXP = {Token.TokenType.MES, Token.TokenType.MENYS, Token.TokenType.NOT, Token.TokenType.CTE_ENTERA, Token.TokenType.CTE_LOGICA, Token.TokenType.PARENTESI_DAVANT, Token.TokenType.ID};
+    private static Token.TokenType[] FIRST_EXP = {Token.TokenType.MES, Token.TokenType.MENYS, Token.TokenType.NOT, Token.TokenType.CTE_ENTERA, Token.TokenType.CTE_LOGICA, Token.TokenType.CTE_CADENA, Token.TokenType.PARENTESI_DAVANT, Token.TokenType.ID};
     private static Token.TokenType[] FIRST_EXP1 = {Token.TokenType.OPER_REL, Token.TokenType.PARENTESI_DARRERE, Token.TokenType.CLAUDATOR_DARRERE, Token.TokenType.FER, Token.TokenType.LLAVORS, Token.TokenType.PUNT_COMA, Token.TokenType.PUNT_PUNT, Token.TokenType.COMA, Token.TokenType.DOS_PUNTS};
     private static Token.TokenType[] FIRST_EXP_SIMPLE = {Token.TokenType.MES, Token.TokenType.MENYS, Token.TokenType.NOT, Token.TokenType.CTE_ENTERA, Token.TokenType.CTE_LOGICA, Token.TokenType.PARENTESI_DAVANT, Token.TokenType.ID};
     private static Token.TokenType[] FIRST_EXP_SIMPLE1 = {Token.TokenType.MES, Token.TokenType.MENYS, Token.TokenType.NOT, Token.TokenType.CTE_ENTERA, Token.TokenType.CTE_LOGICA, Token.TokenType.PARENTESI_DAVANT, Token.TokenType.ID};
@@ -107,7 +109,7 @@ public class SynchronizationSets {
 
         if (instance == null) {
 
-            synchronizationSets = new LinkedList[36];
+            synchronizationSets = new LinkedList[37];
             this.initiateSynchronizationSets();
 
             instance = this;
@@ -164,6 +166,7 @@ public class SynchronizationSets {
         this.ssRepetDec();
         this.ssEndLine();
         this.ssID();
+        this.ssExpEscrirue();
     }
 
 
@@ -213,7 +216,6 @@ public class SynchronizationSets {
         synchronizationSets[5] = new LinkedList<>();
         synchronizationSets[5].addAll(Arrays.asList(FIRST_DEC_FUN));
         synchronizationSets[5].addAll(Arrays.asList(FOLLOWS_DEC_FUN));
-        synchronizationSets[5].add(Token.TokenType.PARENTESI_DAVANT);
         synchronizationSets[5].add(Token.TokenType.EOF);
     }
 
@@ -331,8 +333,7 @@ public class SynchronizationSets {
     private void ssVariable2Abr() {
 
         synchronizationSets[19] = new LinkedList<>();
-        synchronizationSets[19].addAll(Arrays.asList(FOLLOWS_VARIABLE2_ABR));
-        synchronizationSets[19].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[19].addAll(Arrays.asList(FOLLOWS_VARIABLE2));
         synchronizationSets[19].add(Token.TokenType.EOF);
     }
 
@@ -471,5 +472,17 @@ public class SynchronizationSets {
         synchronizationSets[35].add(Token.TokenType.PUNT_COMA);
         synchronizationSets[35].add(Token.TokenType.PARENTESI_DAVANT);
         synchronizationSets[35].add(Token.TokenType.EOF);
+    }
+
+    private void ssExpEscrirue() {
+
+        synchronizationSets[36] = new LinkedList<>();
+        synchronizationSets[36].addAll(Arrays.asList(FIRST_LLISTA_INST));
+        synchronizationSets[36].addAll(Arrays.asList(FIRST_EXP));
+        synchronizationSets[36].add(Token.TokenType.FIFUNC);
+        synchronizationSets[36].add(Token.TokenType.FIPROG);
+        synchronizationSets[36].add(Token.TokenType.FIMENTRE);
+        synchronizationSets[36].add(Token.TokenType.PUNT_COMA);
+        synchronizationSets[36].add(Token.TokenType.EOF);
     }
 }
