@@ -559,7 +559,7 @@ public class Syntactic {
             this.Variable2_abr();
             this.Exp();
         } catch (ParseException e) {
-            //Error.getInstance().writeError(23, Lexicographical.getInstance().getActualLine());
+            Error.getInstance().writeError(16, Lexicographical.getInstance().getActualLine());
             this.consume(SynchronizationSets.getInstance().getSynchronizationSets()[19]);
         }
 
