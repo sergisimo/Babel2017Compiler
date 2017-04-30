@@ -436,7 +436,7 @@ public class Lexicographical {
             if (aux == -1) eof = true;
             else actualChar = (char) aux;
         } catch (IOException e) {
-            //control d'errors
+            Error.getInstance().writeFatalError(1);
         }
     }
 

@@ -21,7 +21,7 @@ public class Error {
             "[ERR_LEX_1] %d, Caràcter %c desconegut",
             "[ERR_LEX_2] %d, Els delimitadors de la constant cadena [\"] no estan tancats",
             "[ERR_SIN_1] %d, ERROR en el retornar de la funció",
-            "[ERR_SIN_2] %d, Error en la capçalera",
+            "[ERR_SIN_2] %d, Error en la capçalera del SI",
             "[ERR_SIN_3] %d, Error, la declaració de la constant no és correcta",
             "[ERR_SIN_4] %d, Error, la declaració de la variable no és correcta",
             "[ERR_SIN_5] %d, Error en la capçalera del MENTRE",
@@ -43,6 +43,11 @@ public class Error {
 
     private static final String[] WARNINGS = {
             "[WAR_LEX_1] %d, Identificador %s té més de 32 caràcters, l'identificador es tallarà per %s"
+    };
+
+    private static final String[] FATAL_ERRORS = {
+            "Error Sintàctic! El compilador aborta la seva execució.",
+            "Error, Fitxer corrupte! El compilador aborta la seva execució."
     };
 
     /* ************************** ATTRIBUTES ***************************/
@@ -94,5 +99,11 @@ public class Error {
     public void writeWarning(int warningCode, Object ... args) {
 
         fileWritter.println(String.format(WARNINGS[warningCode], args));
+    }
+
+    public void writeFatalError(int errorCode) {
+
+        System.out.println(FATAL_ERRORS[errorCode]);
+        exit(-1);
     }
 }
