@@ -3,6 +3,8 @@ package syntactic;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import lexicographical.Lexicographical;
 import lexicographical.Token;
+import semantic.Semantic;
+import taulasimbols.ITipus;
 import utils.Error;
 
 /**
@@ -26,7 +28,8 @@ public class Syntactic {
         if (instance == null) {
             new Error(fileName);
             new Lexicographical(fileName);
-            new SynchronizationSets();
+            //new SynchronizationSets();
+            new Semantic();
 
             instance = this;
         }
@@ -73,6 +76,7 @@ public class Syntactic {
 
     private void P() {
 
+        Semantic.getInstance().addBloc(true);
         this.Decl();
         this.accept(Token.TokenType.PROG);
         this.Llista_Inst();
@@ -125,11 +129,16 @@ public class Syntactic {
 
     private void Dec_Var() {
 
+        ITipus tipus;
+        String id;
+
         this.accept(Token.TokenType.VAR);
+        id = lookAhead.getLexeme();
         this.accept(Token.TokenType.ID);
         this.accept(Token.TokenType.DOS_PUNTS);
-        this.Tipus();
+        tipus = this.Tipus();
         this.accept(Token.TokenType.PUNT_COMA);
+        Semantic.getInstance().addVariable(id, tipus);
     }
 
     private void Dec_Fun() {
@@ -145,10 +154,12 @@ public class Syntactic {
                 this.accept(Token.TokenType.DOS_PUNTS);
                 this.accept(Token.TokenType.TIPUS_SIMPLE);
                 this.accept(Token.TokenType.PUNT_COMA);
+                Semantic.getInstance().addBloc(false);
                 this.Decl_Cte_Var();
                 this.accept(Token.TokenType.FUNC);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FIFUNC);
+                Semantic.getInstance().removeBloc();
                 this.accept(Token.TokenType.PUNT_COMA);
                 this.Dec_Fun();
                 break;
@@ -213,13 +224,15 @@ public class Syntactic {
         }
     }
 
-    private void Tipus() {
+    private ITipus Tipus() {
 
-        this.Tipus_Abr();
+        ITipus tipus = this.Tipus_Abr();
+        tipus = Semantic.getInstance().generateTipus(lookAhead.getLexeme(), tipus);
         this.accept(Token.TokenType.TIPUS_SIMPLE);
+        return tipus;
     }
 
-    private void Tipus_Abr() {
+    private ITipus Tipus_Abr() {
 
         switch (lookAhead.getTokenType()) {
 
@@ -236,6 +249,8 @@ public class Syntactic {
             default:
                 break;
         }
+
+        return null;
     }
 
     private void Exp() {
