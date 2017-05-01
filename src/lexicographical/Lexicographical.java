@@ -41,20 +41,22 @@ public class Lexicographical {
     static final String EN = "en";
     static final String FIPER = "fiper";
     static final String RETORNAR = "retornar";
-    static final String VECTOR = "vector";
+    public static final String VECTOR = "vector";
+    public static final String CADENA = "cadena";
+    public static final String UNDEFINED = "undefined";
     static final String DE = "de";
-    static final String SENCER = "sencer";
-    static final String LOGIC = "logic";
-    static final String NOT = "not";
-    static final String OR = "or";
-    static final String AND = "and";
-    static final String CERT = "cert";
+    public static final String SENCER = "sencer";
+    public static final String LOGIC = "logic";
+    public static final String NOT = "not";
+    public static final String OR = "or";
+    public static final String AND = "and";
+    public static final String CERT = "cert";
     static final String FALS = "fals";
     static final String INTERROGANT = "?";
     static final String COMA = ",";
-    static final String MES = "+";
-    static final String MENYS = "-";
-    static final String MULTIPLICAR = "*";
+    public static final String MES = "+";
+    public static final String MENYS = "-";
+    public static final String MULTIPLICAR = "*";
     static final String PARENTESI_DAVANT = "(";
     static final String PARENTESI_DARRERE = ")";
     static final String CLAUDATOR_DAVANT = "[";
@@ -62,7 +64,7 @@ public class Lexicographical {
     static final String PUNT_COMA = ";";
     static final String DOS_PUNTS = ":";
     private static final String EOF = "EOF";
-    private static final String DIVIDIR = "/";
+    public static final String DIVIDIR = "/";
 
     private static final int MAX_ID_LENGTH = 32;
 
@@ -307,7 +309,6 @@ public class Lexicographical {
                 return 2;
             } else {
                 if (this.actualToken.getLexeme().length() > MAX_ID_LENGTH) {
-                    Error.getInstance().writeWarning(0, this.actualLine, this.actualToken.getLexeme(), this.actualToken.getLexeme().substring(0, MAX_ID_LENGTH));
                     this.actualToken.setLexeme(this.actualToken.getLexeme().substring(0, MAX_ID_LENGTH));
                 }
                 this.actualToken.setTokenType(Token.TokenType.ID);

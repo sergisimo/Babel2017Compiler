@@ -5,6 +5,18 @@ package semantic;
 import java.util.Hashtable;
 
 public class SemanticContainer {
+
+    /* ************************** CONSTANTS ***************************/
+    static final String VALOR = "VALOR";
+    static final String ESTATIC = "ESTATIC";
+    static final String TIPUS = "TIPUS";
+    static final String OPERADOR = "OPERADOR";
+    static final String COMPARACIO = "COMPARACIO";
+    static final String LINEA = "LINEA";
+    static final String COLUMNA = "COLUMNA";
+    static final String REG = "REG";
+    static final String TOKEN = "TOKEN";
+
     private Hashtable attributes = new Hashtable();
     /**
      * SemanticContainer constructor comment.
@@ -60,37 +72,37 @@ public class SemanticContainer {
     public void copy(SemanticContainer exp)
     {
 
-        if (exp.getAttributes().containsKey("VALOR"))
-            setValue("VALOR",exp.getValue("VALOR"));
-        if (exp.getAttributes().containsKey("ESTATIC"))
-            setValue("ESTATIC",exp.getValue("ESTATIC"));
-        if (exp.getAttributes().containsKey("TIPUS"))
-            setValue("TIPUS",exp.getValue("TIPUS"));
-        if (exp.getAttributes().containsKey("OPERADOR"))
-            setValue("OPERADOR",exp.getValue("OPERADOR"));
-        if (exp.getAttributes().containsKey("COMPARACIO"))
-            setValue("COMPARACIO",exp.getValue("COMPARACIO"));
-        if (exp.getAttributes().containsKey("LINEA"))
-            setValue("LINEA",exp.getValue("LINEA"));
-        if (exp.getAttributes().containsKey("COLUMNA"))
-            setValue("COLUMNA",exp.getValue("COLUMNA"));
-        if (exp.getAttributes().containsKey("REG"))
-            setValue("REG",exp.getValue("REG"));
-        if (exp.getAttributes().containsKey("TOKEN"))
-            setValue("TOKEN",exp.getValue("TOKEN"));
+        if (exp.getAttributes().containsKey(VALOR))
+            setValue(VALOR,exp.getValue(VALOR));
+        if (exp.getAttributes().containsKey(ESTATIC))
+            setValue(ESTATIC,exp.getValue(ESTATIC));
+        if (exp.getAttributes().containsKey(TIPUS))
+            setValue(TIPUS,exp.getValue(TIPUS));
+        if (exp.getAttributes().containsKey(OPERADOR))
+            setValue(OPERADOR,exp.getValue(OPERADOR));
+        if (exp.getAttributes().containsKey(COMPARACIO))
+            setValue(COMPARACIO,exp.getValue(COMPARACIO));
+        if (exp.getAttributes().containsKey(LINEA))
+            setValue(LINEA,exp.getValue(LINEA));
+        if (exp.getAttributes().containsKey(COLUMNA))
+            setValue(COLUMNA,exp.getValue(COLUMNA));
+        if (exp.getAttributes().containsKey(REG))
+            setValue(REG,exp.getValue(REG));
+        if (exp.getAttributes().containsKey(TOKEN))
+            setValue(TOKEN,exp.getValue(TOKEN));
 
     }
 
     public String toString() {
 
-        return "Valor: "+getValue("VALOR")+
-                "; Estatic: "+getValue("ESTATIC")+
-                "; Tipus: "+getValue("TIPUS")+
-                "; Oper: "+getValue("OPERADOR")+
-                "; Comp: "+getValue("COMPARACIO")+
-                "; Linea: "+getValue("LINEA")+
-                "; Columna: "+getValue("COLUMNA")+
-                "; Registre: "+getValue("REG");
+        return "Valor: "+getValue(VALOR)+
+                "; Estatic: "+getValue(ESTATIC)+
+                "; Tipus: "+getValue(TIPUS)+
+                "; Oper: "+getValue(OPERADOR)+
+                "; Comp: "+getValue(COMPARACIO)+
+                "; Linea: "+getValue(LINEA)+
+                "; Columna: "+getValue(COLUMNA)+
+                "; Registre: "+getValue(REG);
     }
 
 }
