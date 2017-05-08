@@ -4,7 +4,10 @@ import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import lexicographical.Lexicographical;
 import lexicographical.Token;
 import semantic.Semantic;
+import semantic.SemanticContainer;
+import taulasimbols.Funcio;
 import taulasimbols.ITipus;
+import taulasimbols.Procediment;
 import utils.Error;
 
 /**
@@ -48,6 +51,7 @@ public class Syntactic {
 
         this.lookAhead = Lexicographical.getInstance().getToken();
         this.P();
+        System.out.println(Semantic.getInstance().getTaulaSimbols().toXml());
     }
 
     private void accept (Token.TokenType tokenType) throws ParseException {
@@ -120,11 +124,17 @@ public class Syntactic {
 
     private void Dec_Cte() {
 
+        SemanticContainer vhExp;
+        String id;
+
         this.accept(Token.TokenType.CONST);
+        id = lookAhead.getLexeme();
         this.accept(Token.TokenType.ID);
         this.accept(Token.TokenType.IGUAL);
-        this.Exp();
+        vhExp = this.Exp();
         this.accept(Token.TokenType.PUNT_COMA);
+
+        Semantic.getInstance().addConstant(id, vhExp);
     }
 
     private void Dec_Var() {
@@ -138,29 +148,39 @@ public class Syntactic {
         this.accept(Token.TokenType.DOS_PUNTS);
         tipus = this.Tipus();
         this.accept(Token.TokenType.PUNT_COMA);
+
         Semantic.getInstance().addVariable(id, tipus);
     }
 
     private void Dec_Fun() {
 
+        Funcio auxFuncio;
+        String id, tipusRetorn;
+
         switch (lookAhead.getTokenType()) {
 
             case FUNCIO:
+                Semantic.getInstance().addBloc(false);
                 this.accept(Token.TokenType.FUNCIO);
+                id = lookAhead.getLexeme();
                 this.accept(Token.TokenType.ID);
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
-                this.Llista_Param();
+                auxFuncio = this.Llista_Param();
                 this.accept(Token.TokenType.PARENTESI_DARRERE);
                 this.accept(Token.TokenType.DOS_PUNTS);
+                tipusRetorn = lookAhead.getLexeme();
                 this.accept(Token.TokenType.TIPUS_SIMPLE);
                 this.accept(Token.TokenType.PUNT_COMA);
-                Semantic.getInstance().addBloc(false);
+                Semantic.getInstance().addFuncio(id, auxFuncio, tipusRetorn);
+                Semantic.getInstance().setFuncioAnalitzada(auxFuncio);
+                Semantic.getInstance().setReturnDone(false);
                 this.Decl_Cte_Var();
                 this.accept(Token.TokenType.FUNC);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FIFUNC);
                 Semantic.getInstance().removeBloc();
                 this.accept(Token.TokenType.PUNT_COMA);
+                Semantic.getInstance().checkReturnDone();
                 this.Dec_Fun();
                 break;
 
@@ -169,59 +189,74 @@ public class Syntactic {
         }
     }
 
-    private void Llista_Param() {
+    private Funcio Llista_Param() {
+
+        Funcio auxFuncio = new Funcio();
 
         switch (lookAhead.getTokenType()) {
 
             case PERREF:
             case PERVAL:
-                this.Llista_Param1();
+                auxFuncio = this.Llista_Param1(auxFuncio);
                 break;
 
             default:
                 break;
         }
+
+        return auxFuncio;
     }
 
-    private void Llista_Param1() {
+    private Funcio Llista_Param1(Funcio auxFuncio) {
 
-        this.PasValor();
+        String tipusRetorn = this.PasValor();
+        String id = lookAhead.getLexeme();
         this.accept(Token.TokenType.ID);
         this.accept(Token.TokenType.DOS_PUNTS);
-        this.Tipus();
-        this.Llista_Param2();
+        ITipus tipus = this.Tipus();
+        auxFuncio = Semantic.getInstance().addParametre(auxFuncio, id, tipusRetorn, tipus);
+        auxFuncio = this.Llista_Param2(auxFuncio);
+
+        return auxFuncio;
     }
 
-    private void Llista_Param2() {
+    private Funcio Llista_Param2(Funcio auxFuncio) {
 
         switch (lookAhead.getTokenType()) {
 
             case COMA:
                 this.accept(Token.TokenType.COMA);
-                this.Llista_Param1();
-
+                auxFuncio = this.Llista_Param1(auxFuncio);
                 break;
 
             default:
                 break;
         }
+
+        return auxFuncio;
     }
 
-    private void PasValor() {
+    private String PasValor() {
+
+        String tipusRetorn = new String();
 
         switch (lookAhead.getTokenType()) {
 
             case PERREF:
+                tipusRetorn = lookAhead.getLexeme();
                 this.accept(Token.TokenType.PERREF);
                 break;
 
             case PERVAL:
+                tipusRetorn = lookAhead.getLexeme();
                 this.accept(Token.TokenType.PERVAL);
                 break;
 
             default: Error.getInstance().writeFatalError(0);
                 break;
         }
+
+        return tipusRetorn;
     }
 
     private ITipus Tipus() {
@@ -234,17 +269,20 @@ public class Syntactic {
 
     private ITipus Tipus_Abr() {
 
+        SemanticContainer limitInferior, limitSuperior;
+
         switch (lookAhead.getTokenType()) {
 
             case VECTOR:
                 this.accept(Token.TokenType.VECTOR);
                 this.accept(Token.TokenType.CLAUDATOR_DAVANT);
-                this.Exp();
+                limitInferior = this.Exp();
                 this.accept(Token.TokenType.PUNT_PUNT);
-                this.Exp();
+                limitSuperior = this.Exp();
                 this.accept(Token.TokenType.CLAUDATOR_DARRERE);
                 this.accept(Token.TokenType.DE);
-                break;
+
+                return Semantic.getInstance().generateArray(limitInferior, limitSuperior);
 
             default:
                 break;
@@ -253,24 +291,34 @@ public class Syntactic {
         return null;
     }
 
-    private void Exp() {
+    private SemanticContainer Exp() {
 
-        this.Exp_Simple();
-        this.Exp1();
+        SemanticContainer vsExpSimple;
+
+        vsExpSimple = this.Exp_Simple();
+        return this.Exp1(vsExpSimple);
     }
 
-    private void Exp1() {
+    private SemanticContainer Exp1(SemanticContainer vhExp1) {
+
+        SemanticContainer vsExp1, vsExp_Simple;
+        String operador;
 
         switch (lookAhead.getTokenType()) {
 
             case OPER_REL:
+                operador = lookAhead.getLexeme();
                 this.accept(Token.TokenType.OPER_REL);
-                this.Exp_Simple();
+                vsExp_Simple = this.Exp_Simple();
+                vsExp1 = Semantic.getInstance().doRelationalOperation(vhExp1, operador, vsExp_Simple);
                 break;
 
             default:
+                vsExp1 = vhExp1;
                 break;
         }
+
+        return vsExp1;
     }
 
     private void Exp2() {
@@ -295,7 +343,8 @@ public class Syntactic {
 
     private void Exp3() {
 
-        this.Exp();
+        SemanticContainer vsExp = this.Exp();
+        Semantic.getInstance().checkParameter(vsExp);
         this.Exp4();
     }
 
@@ -309,166 +358,231 @@ public class Syntactic {
                 break;
 
             default:
+                Semantic.getInstance().checkNumberOfParameters();
                 break;
         }
     }
 
-    private void Exp_Simple() {
+    private SemanticContainer Exp_Simple() {
 
-        this.Exp_Simple1();
-        this.Terme();
-        this.Terme1();
+        SemanticContainer vsExpSimple1, vsTerme;
+
+        vsExpSimple1 = this.Exp_Simple1();
+        vsTerme = this.Terme();
+        if (vsTerme != null) vsTerme = Semantic.getInstance().doArithmeticOperation(null, vsExpSimple1, vsTerme);
+        return this.Terme1(vsTerme);
     }
 
-    private void Exp_Simple1() {
+    private SemanticContainer Exp_Simple1() {
+
+        SemanticContainer vsExpSimple1 = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case MES:
+                vsExpSimple1.setValue(SemanticContainer.OPERADOR, Lexicographical.MES);
                 this.accept(Token.TokenType.MES);
                 break;
 
             case MENYS:
+                vsExpSimple1.setValue(SemanticContainer.OPERADOR, Lexicographical.MENYS);
                 this.accept(Token.TokenType.MENYS);
                 break;
 
             case NOT:
+                vsExpSimple1.setValue(SemanticContainer.OPERADOR, Lexicographical.NOT);
                 this.accept(Token.TokenType.NOT);
                 break;
 
             default:
+                vsExpSimple1.setValue(SemanticContainer.OPERADOR, Semantic.UNDEFINED_VALUE);
                 break;
         }
+
+        return vsExpSimple1;
     }
 
-    private void Terme() {
+    private SemanticContainer Terme() {
 
-        this.Factor();
-        this.Factor1();
+        SemanticContainer vsFactor;
+
+        vsFactor = this.Factor();
+        return this.Factor1(vsFactor);
     }
 
-    private void Terme1() {
+    private SemanticContainer Terme1(SemanticContainer vhTerme1) {
+
+        SemanticContainer vsTerme1, vsTerme2, vsTerme;
 
         switch (lookAhead.getTokenType()) {
 
             case MES:
             case MENYS:
             case OR:
-                this.Terme2();
-                this.Terme();
-                this.Terme1();
+                vsTerme2 = this.Terme2();
+                vsTerme = this.Terme();
+                if (vhTerme1 != null && vsTerme != null) vsTerme = Semantic.getInstance().doArithmeticOperation(vhTerme1, vsTerme2, vsTerme);
+                vsTerme1 = this.Terme1(vsTerme);
                 break;
 
             default:
+                vsTerme1 = vhTerme1;
                 break;
         }
+
+        return vsTerme1;
     }
 
-    private void Terme2() {
+    private SemanticContainer Terme2() {
+
+        SemanticContainer vsTerme2 = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case MES:
+                vsTerme2.setValue(SemanticContainer.OPERADOR, Lexicographical.MES);
                 this.accept(Token.TokenType.MES);
                 break;
 
             case MENYS:
+                vsTerme2.setValue(SemanticContainer.OPERADOR, Lexicographical.MENYS);
                 this.accept(Token.TokenType.MENYS);
                 break;
 
             case OR:
+                vsTerme2.setValue(SemanticContainer.OPERADOR, Lexicographical.OR);
                 this.accept(Token.TokenType.OR);
                 break;
         }
+
+        return vsTerme2;
     }
 
-    private void Factor() {
+    private SemanticContainer Factor() {
+
+        SemanticContainer vsFactor = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case CTE_ENTERA:
+                vsFactor.setValue(SemanticContainer.ESTATIC, true);
+                vsFactor.setValue(SemanticContainer.VALOR, Integer.parseInt(lookAhead.getLexeme()));
+                vsFactor.setValue(SemanticContainer.TIPUS, Semantic.getInstance().generateTipusSimple(Lexicographical.SENCER));
                 this.accept(Token.TokenType.CTE_ENTERA);
                 break;
 
             case CTE_LOGICA:
+                vsFactor.setValue(SemanticContainer.ESTATIC, true);
+                if (lookAhead.getLexeme().equals(Lexicographical.CERT)) vsFactor.setValue(SemanticContainer.VALOR, true);
+                else vsFactor.setValue(SemanticContainer.VALOR, false);
+                vsFactor.setValue(SemanticContainer.TIPUS, Semantic.getInstance().generateTipusSimple(Lexicographical.LOGIC));
                 this.accept(Token.TokenType.CTE_LOGICA);
                 break;
 
             case CTE_CADENA:
+                vsFactor.setValue(SemanticContainer.ESTATIC, true);
+                vsFactor.setValue(SemanticContainer.VALOR, lookAhead.getLexeme());
+                vsFactor.setValue(SemanticContainer.TIPUS, Semantic.getInstance().generateTipusCadena(Lexicographical.CADENA, lookAhead.getLexeme().length()));
                 this.accept(Token.TokenType.CTE_CADENA);
                 break;
 
             case PARENTESI_DAVANT:
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
-                this.Exp();
+                vsFactor = this.Exp();
                 this.accept(Token.TokenType.PARENTESI_DARRERE);
                 break;
 
             case ID:
+                vsFactor = Semantic.getInstance().searchID(lookAhead.getLexeme(), false);
                 this.accept(Token.TokenType.ID);
-                this.Variable5();
+                vsFactor = this.Variable5(vsFactor);
                 break;
 
             default: Error.getInstance().writeFatalError(0);
                 break;
         }
+
+        return vsFactor;
     }
 
-    private void Factor1() {
+    private SemanticContainer Factor1(SemanticContainer vhFactor1) {
+
+        SemanticContainer vsFactor1, vsFactor2, vsFactor;
 
         switch (lookAhead.getTokenType()) {
 
             case MULTIPLICAR:
             case DIVIDIR:
             case AND:
-                this.Factor2();
-                this.Factor();
-                this.Factor1();
+                vsFactor2 = this.Factor2();
+                vsFactor = this.Factor();
+                if (vhFactor1 != null && vsFactor != null) vsFactor = Semantic.getInstance().doArithmeticOperation(vhFactor1, vsFactor2, vsFactor);
+                vsFactor1 = this.Factor1(vsFactor);
                 break;
 
             default:
+                vsFactor1 = vhFactor1;
                 break;
         }
+
+        return vsFactor1;
     }
 
-    private void Factor2() {
+    private SemanticContainer Factor2() {
+
+        SemanticContainer vsFactor2 = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case MULTIPLICAR:
+                vsFactor2.setValue(SemanticContainer.OPERADOR, Lexicographical.MULTIPLICAR);
                 this.accept(Token.TokenType.MULTIPLICAR);
                 break;
 
             case DIVIDIR:
+                vsFactor2.setValue(SemanticContainer.OPERADOR, Lexicographical.DIVIDIR);
                 this.accept(Token.TokenType.DIVIDIR);
                 break;
 
             case AND:
+                vsFactor2.setValue(SemanticContainer.OPERADOR, Lexicographical.AND);
                 this.accept(Token.TokenType.AND);
                 break;
         }
+
+        return vsFactor2;
     }
 
-    private void Variable() {
+    private SemanticContainer Variable() {
 
+        SemanticContainer vhVariable1 = Semantic.getInstance().searchID(lookAhead.getLexeme(), false);
+        SemanticContainer vsVariable1;
 
         this.accept(Token.TokenType.ID);
-        this.Variable1();
+        vsVariable1 = this.Variable1(vhVariable1);
+        if (vhVariable1 != null && vsVariable1 != null) Semantic.getInstance().checkIsVariable(vhVariable1, vsVariable1);
+        return vsVariable1;
     }
 
-    private void Variable1() {
+    private SemanticContainer Variable1(SemanticContainer vhVariable1) {
+
+        SemanticContainer vsVariable1 = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case CLAUDATOR_DAVANT:
                 this.accept(Token.TokenType.CLAUDATOR_DAVANT);
-                this.Exp();
+                SemanticContainer vsExp = this.Exp();
                 this.accept(Token.TokenType.CLAUDATOR_DARRERE);
+                if (vhVariable1 != null) vsVariable1 = Semantic.getInstance().checkArray(vhVariable1, vsExp);
                 break;
 
             default:
+                if (vhVariable1 != null) vsVariable1 = Semantic.getInstance().checkConstantOrVariable(vhVariable1);
                 break;
         }
+
+        return vsVariable1;
     }
 
     private void Variable3() {
@@ -491,14 +605,21 @@ public class Syntactic {
         }
     }
 
-    private void Variable5() {
+    private SemanticContainer Variable5(SemanticContainer vhVaraible5) {
+
+        SemanticContainer vsVariable5 = new SemanticContainer();
 
         switch (lookAhead.getTokenType()) {
 
             case PARENTESI_DAVANT:
+                if (vhVaraible5 != null) {
+                    Funcio procedimentAux = (Funcio) vhVaraible5.getValue(SemanticContainer.VALOR);
+                    Semantic.getInstance().checkFunctionID(procedimentAux.getNom());
+                }
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
                 this.Exp2();
                 this.accept(Token.TokenType.PARENTESI_DARRERE);
+                if (vhVaraible5 != null) vsVariable5 = Semantic.getInstance().getTypeFromFunction(vhVaraible5);
                 break;
 
             case CLAUDATOR_DAVANT:
@@ -518,12 +639,14 @@ public class Syntactic {
             case DOS_PUNTS:
             case FER:
             case LLAVORS:
-                this.Variable1();
+                vsVariable5 = this.Variable1(vhVaraible5);
                 break;
 
             default: Error.getInstance().writeFatalError(0);
                 break;
         }
+
+        return vsVariable5;
     }
 
     private void Llista_Inst() {
@@ -555,12 +678,15 @@ public class Syntactic {
 
     private void Inst() {
 
+        SemanticContainer vsExp, vsVariable;
+
         switch (lookAhead.getTokenType()) {
 
             case ID:
-                this.Variable();
+                vsVariable = this.Variable();
                 this.accept(Token.TokenType.IGUAL);
-                this.Exp();
+                vsExp = this.Exp();
+                if (vsVariable != null && vsExp != null) Semantic.getInstance().checkAssignation(vsVariable, vsExp);
                 break;
 
             case ESCRIURE:
@@ -581,12 +707,14 @@ public class Syntactic {
                 this.accept(Token.TokenType.CICLE);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FINS);
-                this.Exp();
+                vsExp = this.Exp();
+                if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
                 break;
 
             case MENTRE:
                 this.accept(Token.TokenType.MENTRE);
-                this.Exp();
+                vsExp = this.Exp();
+                if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
                 this.accept(Token.TokenType.FER);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FIMENTRE);
@@ -594,7 +722,8 @@ public class Syntactic {
 
             case SI:
                 this.accept(Token.TokenType.SI);
-                this.Exp();
+                vsExp = this.Exp();
+                if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
                 this.accept(Token.TokenType.LLAVORS);
                 this.Llista_Inst();
                 this.Inst1();
@@ -603,7 +732,8 @@ public class Syntactic {
 
             case RETORNAR:
                 this.accept(Token.TokenType.RETORNAR);
-                this.Exp();
+                vsExp = this.Exp();
+                Semantic.getInstance().checkReturn(vsExp);
                 break;
 
             default: Error.getInstance().writeFatalError(0);
@@ -627,7 +757,8 @@ public class Syntactic {
 
     private void ExpEscriure() {
 
-        this.Exp();
+        SemanticContainer vsExp = this.Exp();
+        Semantic.getInstance().checkExpEscriure(vsExp);
         this.ExpEscriure1();
     }
 

@@ -7,15 +7,15 @@ import java.util.Hashtable;
 public class SemanticContainer {
 
     /* ************************** CONSTANTS ***************************/
-    static final String VALOR = "VALOR";
-    static final String ESTATIC = "ESTATIC";
-    static final String TIPUS = "TIPUS";
-    static final String OPERADOR = "OPERADOR";
-    static final String COMPARACIO = "COMPARACIO";
-    static final String LINEA = "LINEA";
-    static final String COLUMNA = "COLUMNA";
-    static final String REG = "REG";
-    static final String TOKEN = "TOKEN";
+    public static final String VALOR = "VALOR";
+    public static final String ESTATIC = "ESTATIC";
+    public static final String TIPUS = "TIPUS";
+    public static final String OPERADOR = "OPERADOR";
+    public static final String COMPARACIO = "COMPARACIO";
+    public static final String LINEA = "LINEA";
+    public static final String COLUMNA = "COLUMNA";
+    public static final String REG = "REG";
+    public static final String TOKEN = "TOKEN";
 
     private Hashtable attributes = new Hashtable();
     /**

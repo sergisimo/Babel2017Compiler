@@ -24,8 +24,8 @@ public class Lexicographical {
     static final String FUNC = "func";
     static final String FUNCIO = "funcio";
     static final String FIFUNC = "fifunc";
-    static final String PERREF = "perref";
-    static final String PERVAL = "perval";
+    public static final String PERREF = "perref";
+    public static final String PERVAL = "perval";
     static final String LLEGIR = "llegir";
     static final String ESCRIURE = "escriure";
     static final String CICLE = "cicle";
