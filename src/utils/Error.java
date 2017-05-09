@@ -59,7 +59,7 @@ public class Error {
             "[ERR_SEM_18] %d, La funció %s ha de ser del tipus %s però en la expressió del seu valor és del tipus %s",
             "[ERR_SEM_19] %d, Retornar fora de funció",
             "[ERR_SEM_20] %d, L'expressió no és estàtica",
-            "[ERR_SEM_21] %d, L'identificador %sno ha estat declarat com a funció/procediment",
+            "[ERR_SEM_21] %d, L'identificador %sno ha estat declarat com a funció",
             "[ERR_SEM_22] %d, L'identificador %s no ha estat declarat com a variable o constant",
             "[ERR_SEM_23] %d, La variable %s en part esquerra d'assignació no és de tipus simple",
             "[ERR_SEM_24] %d, La expressió assignada a la constant %s no és de tipus simple o de tipus cadena",
