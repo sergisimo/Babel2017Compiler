@@ -612,10 +612,7 @@ public class Syntactic {
         switch (lookAhead.getTokenType()) {
 
             case PARENTESI_DAVANT:
-                if (vhVaraible5 != null) {
-                    Funcio procedimentAux = (Funcio) vhVaraible5.getValue(SemanticContainer.VALOR);
-                    Semantic.getInstance().checkFunctionID(procedimentAux.getNom());
-                }
+                if (vhVaraible5 != null) Semantic.getInstance().checkFunctionID(vhVaraible5);
                 this.accept(Token.TokenType.PARENTESI_DAVANT);
                 this.Exp2();
                 this.accept(Token.TokenType.PARENTESI_DARRERE);

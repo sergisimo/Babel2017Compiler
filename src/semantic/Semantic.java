@@ -312,28 +312,30 @@ public class Semantic {
 
     public SemanticContainer getTypeFromFunction(SemanticContainer function) {
 
-        Procediment aux = (Procediment) function.getValue(SemanticContainer.VALOR);
         SemanticContainer returnContainer = new SemanticContainer();
 
         returnContainer.setValue(SemanticContainer.ESTATIC, false);
         returnContainer.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
 
-        if (aux.getClass() != Funcio.class) returnContainer.setValue(SemanticContainer.TIPUS, new TipusIndefinit());
+        if (function.getValue(SemanticContainer.VALOR).getClass() != Funcio.class) returnContainer.setValue(SemanticContainer.TIPUS, new TipusIndefinit());
         else {
-            Funcio auxFuncio = (Funcio) aux;
+            Funcio auxFuncio = (Funcio) function.getValue(SemanticContainer.VALOR);
             returnContainer.setValue(SemanticContainer.TIPUS, auxFuncio.getTipus());
         }
 
         return returnContainer;
     }
 
-    public void checkFunctionID(String id) {
+    public void checkFunctionID(SemanticContainer funcio) {
 
-        Funcio auxProcediment = (Funcio) taulaSimbols.obtenirBloc(0).obtenirProcediment(id);
+        Funcio auxProcediment = null;
+        if (funcio.getValue(SemanticContainer.VALOR).getClass() == Funcio.class) auxProcediment =  (Funcio) funcio.getValue(SemanticContainer.VALOR);
 
-        setFuncioCridada(auxProcediment);
-
-        if (auxProcediment == null) Error.getInstance().writeError(40, Lexicographical.getInstance().getActualLine(), id);
+        if (auxProcediment == null) {
+            setFuncioCridada(new Funcio());
+            Error.getInstance().writeError(40, Lexicographical.getInstance().getActualLine(), "");
+        }
+        else setFuncioCridada(auxProcediment);
     }
 
     public SemanticContainer checkConstantOrVariable(SemanticContainer container) {
@@ -466,7 +468,7 @@ public class Semantic {
 
         ITipus tipusExp = (ITipus) exp.getValue(SemanticContainer.TIPUS);
 
-        if (tipusExp == null || !tipusExp.getNom().equals(Lexicographical.LOGIC)) Error.getInstance().writeError(26, Lexicographical.getInstance().getActualLine());
+        if (tipusExp == null || tipusExp.getNom() == null || !tipusExp.getNom().equals(Lexicographical.LOGIC)) Error.getInstance().writeError(26, Lexicographical.getInstance().getActualLine());
     }
 
     public void checkExpEscriure (SemanticContainer expEscriure) {
@@ -490,26 +492,29 @@ public class Semantic {
 
         if (taulaSimbols.getBlocActual() == 0) Error.getInstance().writeError(38, Lexicographical.getInstance().getActualLine());
         if (tipusExp == null || tipusFuncio == null) Error.getInstance().writeError(49, Lexicographical.getInstance().getActualLine());
-        else if(!tipusExp.getNom().equals(tipusFuncio.getNom())) Error.getInstance().writeError(37, Lexicographical.getInstance().getActualLine(), funcioAnalitzada.getNom(), tipusFuncio.getNom(), tipusExp.getNom());
+        else if(tipusExp.getNom() != null && tipusFuncio.getNom() != null && !tipusExp.getNom().equals(tipusFuncio.getNom())) Error.getInstance().writeError(37, Lexicographical.getInstance().getActualLine(), funcioAnalitzada.getNom(), tipusFuncio.getNom(), tipusExp.getNom());
     }
 
     public void checkParameter(SemanticContainer exp) {
 
         ITipus tipusParametre = null;
 
-        if (comptador < funcioCridada.getNumeroParametres()) tipusParametre = funcioCridada.obtenirParametre(comptador).getTipus();
-        ITipus tipusExp = (ITipus) exp.getValue(SemanticContainer.TIPUS);
+        if (funcioCridada != null && comptador < funcioCridada.getNumeroParametres()) {
 
-        if (tipusParametre == null || tipusExp == null);
-        else if ((!tipusParametre.getNom().equals(tipusExp.getNom()))) Error.getInstance().writeError(35, Lexicographical.getInstance().getActualLine(), comptador + 1, tipusParametre.getNom());
-        else if (funcioCridada.obtenirParametre(comptador).getTipusPasParametre() == TipusPasParametre.REFERENCIA && (boolean) exp.getValue(SemanticContainer.ESTATIC)) Error.getInstance().writeError(36, Lexicographical.getInstance().getActualLine(), comptador + 1);
+            tipusParametre = funcioCridada.obtenirParametre(comptador).getTipus();
+
+            ITipus tipusExp = (ITipus) exp.getValue(SemanticContainer.TIPUS);
+
+            if ((!tipusParametre.getNom().equals(tipusExp.getNom()))) Error.getInstance().writeError(35, Lexicographical.getInstance().getActualLine(), comptador + 1, tipusParametre.getNom());
+            else if (funcioCridada.obtenirParametre(comptador).getTipusPasParametre() == TipusPasParametre.REFERENCIA && (boolean) exp.getValue(SemanticContainer.ESTATIC)) Error.getInstance().writeError(36, Lexicographical.getInstance().getActualLine(), comptador + 1);
+        }
 
         comptador++;
     }
 
     public void checkNumberOfParameters() {
 
-        if (comptador != funcioCridada.getNumeroParametres()) Error.getInstance().writeError(34, Lexicographical.getInstance().getActualLine(), funcioCridada.getNumeroParametres(), comptador);
+        if (funcioCridada != null && comptador != funcioCridada.getNumeroParametres()) Error.getInstance().writeError(34, Lexicographical.getInstance().getActualLine(), funcioCridada.getNumeroParametres(), comptador);
     }
 
     /* ************************ PRIVATE METHODS *************************/
@@ -781,7 +786,7 @@ public class Semantic {
         ITipus tipus1 = (ITipus) exp1.getValue(SemanticContainer.TIPUS);
         ITipus tipus2 = (ITipus) exp2.getValue(SemanticContainer.TIPUS);
 
-        if (tipus1 != null && tipus2 != null) return tipus1.getNom().equals(Lexicographical.LOGIC) && tipus2.getNom().equals(Lexicographical.LOGIC);
+        if (tipus1 != null && tipus2 != null && tipus1.getNom() != null && tipus2.getNom() != null) return tipus1.getNom().equals(Lexicographical.LOGIC) && tipus2.getNom().equals(Lexicographical.LOGIC);
         else return false;
     }
 }
