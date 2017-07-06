@@ -7,7 +7,6 @@ import semantic.Semantic;
 import semantic.SemanticContainer;
 import taulasimbols.Funcio;
 import taulasimbols.ITipus;
-import taulasimbols.Procediment;
 import utils.Error;
 
 /**
@@ -82,8 +81,11 @@ public class Syntactic {
 
         Semantic.getInstance().addBloc(true);
         this.Decl();
+
         this.accept(Token.TokenType.PROG);
+
         this.Llista_Inst();
+
         this.accept(Token.TokenType.FIPROG);
     }
 
@@ -493,7 +495,7 @@ public class Syntactic {
                 break;
 
             case ID:
-                vsFactor = Semantic.getInstance().searchID(lookAhead.getLexeme(), false);
+                vsFactor = Semantic.getInstance().searchIDForUtilitzation(lookAhead.getLexeme());
                 this.accept(Token.TokenType.ID);
                 vsFactor = this.Variable5(vsFactor);
                 break;
@@ -555,12 +557,12 @@ public class Syntactic {
 
     private SemanticContainer Variable() {
 
-        SemanticContainer vhVariable1 = Semantic.getInstance().searchID(lookAhead.getLexeme(), false);
+        SemanticContainer vhVariable1 = Semantic.getInstance().searchIDForUtilitzation(lookAhead.getLexeme());
         SemanticContainer vsVariable1;
 
         this.accept(Token.TokenType.ID);
         vsVariable1 = this.Variable1(vhVariable1);
-        if (vhVariable1 != null && vsVariable1 != null) Semantic.getInstance().checkIsVariable(vhVariable1, vsVariable1);
+        if (vsVariable1 != null) Semantic.getInstance().checkIsVariable(vhVariable1, vsVariable1);
         return vsVariable1;
     }
 
@@ -650,6 +652,7 @@ public class Syntactic {
 
         this.Inst();
         this.accept(Token.TokenType.PUNT_COMA);
+        System.out.println(Lexicographical.getInstance().getActualLine());
         this.Llista_Inst1();
     }
 
