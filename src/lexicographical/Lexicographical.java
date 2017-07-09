@@ -1,4 +1,5 @@
-package lexicographical;/* **************************** IMPORTS *****************************/
+package lexicographical;
+/* **************************** IMPORTS *****************************/
 import utils.Error;
 
 import java.io.*;

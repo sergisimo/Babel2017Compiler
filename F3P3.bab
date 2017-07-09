@@ -1,3 +1,4 @@
+
 Const CTE_S1 = cert;
 Const CTE_S2 = CTE_S1 + 5;		//tipos no concuerdan,
 Const CTE_S3 = CTE_S2;			//cte_s2 mal definida
@@ -70,6 +71,9 @@ i = f1(10);			//funcion no declarada
 i = f1(10,20);			//error?
 i= f1(20);			//error?
 
-i= g1(Z3,10,20);
+i= g1(Z3,10,20);		//g1 mal definida, error?
+
+
+
 
 fiprog

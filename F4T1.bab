@@ -1,0 +1,18 @@
+var y : sencer;
+var z : sencer;
+var x : logic;
+var a : logic;
+
+prog
+
+    escriure("Escriu z:\n");
+    llegir(z);
+    escriure("Escriu y:\n");
+    llegir(y);
+
+    z = (z * y + 256) / 30;
+
+    escriure("El resultat es: ");
+    escriure(z);
+
+fiprog

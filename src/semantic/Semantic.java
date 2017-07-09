@@ -1,6 +1,9 @@
 package semantic;
 
 /* **************************** IMPORTS *****************************/
+import codeGeneration.CodeGenerator;
+import com.sun.org.apache.bcel.internal.classfile.Code;
+import com.sun.org.apache.regexp.internal.RE;
 import sun.awt.image.ImageWatched;
 import taulasimbols.*;
 import lexicographical.Lexicographical;
@@ -92,6 +95,7 @@ public class Semantic {
         else {
             aux.setNom(lexeme);
             aux.setTipus(tipus);
+            aux.setDesplacament(CodeGenerator.getInstance().getGlobalOffset(tipus));
 
             taulaSimbols.obtenirBloc(taulaSimbols.getBlocActual()).inserirVariable(aux);
         }
@@ -123,6 +127,8 @@ public class Semantic {
             aux.setNom(id);
             aux.setTipus(tipus);
             aux.setValor(valor);
+
+            CodeGenerator.getInstance().generateStringConstant(id, (String) valor);
 
             taulaSimbols.obtenirBloc(taulaSimbols.getBlocActual()).inserirConstant(aux);
         }
@@ -240,10 +246,15 @@ public class Semantic {
         switch (tipus) {
 
             case Lexicographical.LOGIC:
-                //PREGUNTAR COM OMPLIR EL TIPUS PER GENERACIÓ DE CODI
+                aux.setMaxim(2147483647);
+                aux.setMinim(0);
+                aux.setTamany(4);
                 break;
 
             case Lexicographical.SENCER:
+                aux.setTamany(4);
+                aux.setMaxim(2147483647);
+                aux.setMinim(-2147483647);
                 //PREGUNTAR COM OMPLIR EL TIPUS PER GENERACIÓ DE CODI
                 break;
         }
@@ -446,6 +457,17 @@ public class Semantic {
 
         if (tipusExp == null || tipusVariable == null || tipusExp.getClass() != TipusSimple.class || tipusVariable.getClass() != TipusSimple.class) Error.getInstance().writeError(47, Lexicographical.getInstance().getActualLine());
         else if (!tipusVariable.getNom().equals(tipusExp.getNom())) Error.getInstance().writeError(31, Lexicographical.getInstance().getActualLine(), tipusVariable.getNom(), tipusExp.getNom());
+        else {
+            if ((boolean) exp.getValue(SemanticContainer.ESTATIC) && (int) exp.getValue(SemanticContainer.REG) == -1) {
+                if (tipusExp.getNom().equals(Lexicographical.LOGIC)) exp.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBoolean((boolean) exp.getValue(SemanticContainer.VALOR)));
+                else exp.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadNumber((int) exp.getValue(SemanticContainer.VALOR)));
+            }
+            if (!(boolean) exp.getValue(SemanticContainer.ESTATIC) && (int) exp.getValue(SemanticContainer.REG) == -1) {
+                if (tipusExp.getNom().equals(Lexicographical.LOGIC)) exp.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBooleanOnRegister(exp, CodeGenerator.GLOBAL_POINTER));
+                else exp.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadNumberOnRegister(exp, CodeGenerator.GLOBAL_POINTER));
+            }
+            CodeGenerator.getInstance().assignation(variable, (int) exp.getValue(SemanticContainer.REG));
+        }
     }
 
     public void checkIsLogic(SemanticContainer exp) {
@@ -553,7 +575,6 @@ public class Semantic {
 
         SemanticContainer vsAdd = new SemanticContainer();
 
-
         if (exp1 == null) {
 
             ITipus tipus = (ITipus) exp2.getValue(SemanticContainer.TIPUS);
@@ -563,9 +584,11 @@ public class Semantic {
                 if ((boolean) exp2.getValue(SemanticContainer.ESTATIC)) {
                     vsAdd.setValue(SemanticContainer.ESTATIC, true);
                     vsAdd.setValue(SemanticContainer.VALOR, oneNumberOperation((int)exp2.getValue(SemanticContainer.VALOR), operator));
+                    vsAdd.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadNumber((int) vsAdd.getValue(SemanticContainer.VALOR)));
                 } else {
                     vsAdd.setValue(SemanticContainer.ESTATIC, false);
                     vsAdd.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
+                    vsAdd.setValue(SemanticContainer.REG, CodeGenerator.getInstance().oneNumberOperation(exp2, operator));
                 }
             }
         } else {
@@ -578,9 +601,11 @@ public class Semantic {
                     int valor1 = (int) exp1.getValue(SemanticContainer.VALOR);
                     int valor2 = (int) exp2.getValue(SemanticContainer.VALOR);
                     vsAdd.setValue(SemanticContainer.VALOR, twoNumberOperation(valor1, valor2, operator));
+                    vsAdd.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadNumber((int) vsAdd.getValue(SemanticContainer.VALOR)));
                 } else {
                     vsAdd.setValue(SemanticContainer.ESTATIC, false);
                     vsAdd.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
+                    vsAdd.setValue(SemanticContainer.REG, CodeGenerator.getInstance().twoNumberOperation(exp1, exp2, operator));
                 }
             }
         }
@@ -602,9 +627,11 @@ public class Semantic {
                 if ((boolean) exp2.getValue(SemanticContainer.ESTATIC)) {
                     vsLogic.setValue(SemanticContainer.ESTATIC, true);
                     vsLogic.setValue(SemanticContainer.VALOR, !(boolean)exp2.getValue(SemanticContainer.VALOR));
+                    vsLogic.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBoolean((boolean)vsLogic.getValue(SemanticContainer.VALOR)));
                 } else {
                     vsLogic.setValue(SemanticContainer.ESTATIC, false);
                     vsLogic.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
+                    vsLogic.setValue(SemanticContainer.REG, CodeGenerator.getInstance().notOperation(exp2));
                 }
             }
 
@@ -617,9 +644,11 @@ public class Semantic {
                     boolean valor1 = (boolean) exp1.getValue(SemanticContainer.VALOR);
                     boolean valor2 = (boolean) exp2.getValue(SemanticContainer.VALOR);
                     vsLogic.setValue(SemanticContainer.VALOR, booleanOperation(valor1, valor2, operator));
+                    vsLogic.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBoolean((boolean)vsLogic.getValue(SemanticContainer.VALOR)));
                 } else {
                     vsLogic.setValue(SemanticContainer.ESTATIC, false);
                     vsLogic.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
+                    vsLogic.setValue(SemanticContainer.REG, CodeGenerator.getInstance().booleanOperation(exp1, exp2, operator));
                 }
             }
         }
@@ -666,8 +695,10 @@ public class Semantic {
                     break;
             }
 
+            returnContainer.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBoolean((boolean) returnContainer.getValue(SemanticContainer.VALOR)));
         } else {
 
+            returnContainer.setValue(SemanticContainer.REG, CodeGenerator.getInstance().relationalOperation(exp1, exp2, operator));
             returnContainer.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
             returnContainer.setValue(SemanticContainer.ESTATIC, false);
         }
@@ -718,8 +749,10 @@ public class Semantic {
                     break;
             }
 
+            returnContainer.setValue(SemanticContainer.REG, CodeGenerator.getInstance().loadBoolean((boolean) returnContainer.getValue(SemanticContainer.VALOR)));
         } else {
 
+            returnContainer.setValue(SemanticContainer.REG, CodeGenerator.getInstance().relationalOperation(exp1, exp2, operator));
             returnContainer.setValue(SemanticContainer.VALOR, UNDEFINED_VALUE);
             returnContainer.setValue(SemanticContainer.ESTATIC, false);
         }

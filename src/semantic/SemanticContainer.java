@@ -23,6 +23,7 @@ public class SemanticContainer {
      */
     public SemanticContainer() {
         super();
+        this.setValue(REG, -1);
     }
     /**
      * This method was created in VisualAge.

@@ -1,5 +1,7 @@
 package syntactic;
 /* **************************** IMPORTS *****************************/
+import codeGeneration.CodeGenerator;
+import com.sun.org.apache.bcel.internal.classfile.Code;
 import com.sun.org.apache.xerces.internal.impl.xpath.regex.ParseException;
 import lexicographical.Lexicographical;
 import lexicographical.Token;
@@ -32,6 +34,7 @@ public class Syntactic {
             new Lexicographical(fileName);
             //new SynchronizationSets();
             new Semantic();
+            new CodeGenerator(fileName);
 
             instance = this;
         }
@@ -50,6 +53,7 @@ public class Syntactic {
 
         this.lookAhead = Lexicographical.getInstance().getToken();
         this.P();
+        CodeGenerator.getInstance().closeFileWritter();
         System.out.println(Semantic.getInstance().getTaulaSimbols().toXml());
     }
 
@@ -83,6 +87,7 @@ public class Syntactic {
         this.Decl();
 
         this.accept(Token.TokenType.PROG);
+        CodeGenerator.getInstance().writeMain();
 
         this.Llista_Inst();
 
@@ -485,6 +490,7 @@ public class Syntactic {
                 vsFactor.setValue(SemanticContainer.ESTATIC, true);
                 vsFactor.setValue(SemanticContainer.VALOR, lookAhead.getLexeme());
                 vsFactor.setValue(SemanticContainer.TIPUS, Semantic.getInstance().generateTipusCadena(Lexicographical.CADENA, lookAhead.getLexeme().length()));
+                vsFactor.setValue(SemanticContainer.REG, CodeGenerator.getInstance().generateString(lookAhead.getLexeme()));
                 this.accept(Token.TokenType.CTE_CADENA);
                 break;
 
@@ -577,6 +583,7 @@ public class Syntactic {
                 SemanticContainer vsExp = this.Exp();
                 this.accept(Token.TokenType.CLAUDATOR_DARRERE);
                 if (vhVariable1 != null) vsVariable1 = Semantic.getInstance().checkArray(vhVariable1, vsExp);
+                vsVariable1.setValue(SemanticContainer.COLUMNA, vsExp);
                 break;
 
             default:
@@ -584,12 +591,15 @@ public class Syntactic {
                 break;
         }
 
+        if(vhVariable1.getValue(SemanticContainer.LINEA) != null) vsVariable1.setValue(SemanticContainer.LINEA, vhVariable1.getValue(SemanticContainer.LINEA));
+
         return vsVariable1;
     }
 
     private void Variable3() {
 
-        this.Variable();
+        SemanticContainer var = this.Variable();
+        CodeGenerator.getInstance().llegir(var);
         this.Variable4();
     }
 
@@ -645,6 +655,7 @@ public class Syntactic {
                 break;
         }
 
+        if (vhVaraible5.getValue(SemanticContainer.LINEA) != null) vsVariable5.setValue(SemanticContainer.LINEA, vhVaraible5.getValue(SemanticContainer.LINEA));
         return vsVariable5;
     }
 
@@ -652,7 +663,6 @@ public class Syntactic {
 
         this.Inst();
         this.accept(Token.TokenType.PUNT_COMA);
-        System.out.println(Lexicographical.getInstance().getActualLine());
         this.Llista_Inst1();
     }
 
@@ -759,6 +769,7 @@ public class Syntactic {
 
         SemanticContainer vsExp = this.Exp();
         Semantic.getInstance().checkExpEscriure(vsExp);
+        CodeGenerator.getInstance().escriure(vsExp);
         this.ExpEscriure1();
     }
 
