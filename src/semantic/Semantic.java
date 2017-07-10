@@ -128,7 +128,7 @@ public class Semantic {
             aux.setTipus(tipus);
             aux.setValor(valor);
 
-            CodeGenerator.getInstance().generateStringConstant(id, (String) valor);
+            if (tipus.getClass() == TipusCadena.class) CodeGenerator.getInstance().generateStringConstant(id, (String) valor);
 
             taulaSimbols.obtenirBloc(taulaSimbols.getBlocActual()).inserirConstant(aux);
         }

@@ -351,6 +351,16 @@ public class CodeGenerator {
         generateCode(MAIN_CODE);
     }
 
+    public void generateBranchCode(SemanticContainer exp, String label) {
+
+        generateCode(String.format(BRANCH_EQUAL_ZERO, exp.getValue(SemanticContainer.REG), label));
+    }
+
+    public void genereteInconditonalBranch(String label) {
+
+        generateCode(String.format(BRANCH, label));
+    }
+
     /* ************************* PRIVATE METHODS **************************/
     public int loadNumberOnRegister(SemanticContainer aux, String pointer) {
 
@@ -407,13 +417,14 @@ public class CodeGenerator {
         else if ((boolean) casella.getValue(SemanticContainer.ESTATIC)) {
 
             TipusArray array = (TipusArray) tipus;
-            return - variable.getDesplacament() + ((int)casella.getValue(SemanticContainer.VALOR) - (int) array.obtenirDimensio(0).getLimitInferior()) * 4;
+            return - (variable.getDesplacament() + ((int)casella.getValue(SemanticContainer.VALOR) - (int) array.obtenirDimensio(0).getLimitInferior()) * 4);
         } else {
 
             TipusArray array = (TipusArray) tipus;
             register = registers.askForRegister();
             generateCode(String.format(LOAD_IMMEDIAT, register, (int) array.obtenirDimensio(0).getLimitInferior()));
             if ((int) casella.getValue(SemanticContainer.REG) == -1) register2 = loadNumberOnRegister(casella, GLOBAL_POINTER);
+            else register2 = (int) casella.getValue(SemanticContainer.REG);
             generateCode(String.format(BRANCH_LOWER_THAN, register2, register, ERROR_LABEL));
             generateCode(String.format(LOAD_IMMEDIAT, register, (int) array.obtenirDimensio(0).getLimitSuperior()));
             generateCode(String.format(BRANCH_GREATER_THAN, register2, register, ERROR_LABEL));
@@ -421,7 +432,8 @@ public class CodeGenerator {
             generateCode(String.format(SUBSTRACT, register2, register2, register));
             generateCode(String.format(LOAD_IMMEDIAT, register, 4));
             generateCode(String.format(MULTIPLICATION, register2, register2, register));
-            generateCode(String.format(ADD, register2, register2, variable.getDesplacament()));
+            generateCode(String.format(LOAD_IMMEDIAT, register, variable.getDesplacament()));
+            generateCode(String.format(ADD, register2, register2, register));
             generateCode(String.format(SUBSTRACT, register2, 28, register2));
             stringBuilder.replace(0, stringBuilder.length(), "$" + register2);
 
@@ -430,7 +442,7 @@ public class CodeGenerator {
         }
     }
 
-    private String askForLabel() {
+    public String askForLabel() {
 
         etiqueta++;
         return "eti" + (etiqueta - 1);

@@ -10,9 +10,11 @@ prog
     escriure("Escriu y:\n");
     llegir(y);
 
-    z = (z * y + 256) / 30;
 
-    escriure("El resultat es: ");
-    escriure(z);
+    si z > y llavors
+        escriure("Mes gran!\n");
+    sino
+        escriure("Mes petit!\n");
+    fisi;
 
 fiprog

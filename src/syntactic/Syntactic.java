@@ -715,19 +715,28 @@ public class Syntactic {
 
             case CICLE:
                 this.accept(Token.TokenType.CICLE);
+                String eti = CodeGenerator.getInstance().askForLabel();
+                CodeGenerator.getInstance().writeLabel(eti);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FINS);
                 vsExp = this.Exp();
                 if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
+                CodeGenerator.getInstance().generateBranchCode(vsExp, eti);
                 break;
 
             case MENTRE:
                 this.accept(Token.TokenType.MENTRE);
+                String eti3 = CodeGenerator.getInstance().askForLabel();
+                String eti4 = CodeGenerator.getInstance().askForLabel();
+                CodeGenerator.getInstance().writeLabel(eti4);
                 vsExp = this.Exp();
                 if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
                 this.accept(Token.TokenType.FER);
+                CodeGenerator.getInstance().generateBranchCode(vsExp, eti3);
                 this.Llista_Inst();
                 this.accept(Token.TokenType.FIMENTRE);
+                CodeGenerator.getInstance().genereteInconditonalBranch(eti4);
+                CodeGenerator.getInstance().writeLabel(eti3);
                 break;
 
             case SI:
@@ -735,9 +744,15 @@ public class Syntactic {
                 vsExp = this.Exp();
                 if (vsExp != null) Semantic.getInstance().checkIsLogic(vsExp);
                 this.accept(Token.TokenType.LLAVORS);
+                String eti1 = CodeGenerator.getInstance().askForLabel();
+                String eti2 = CodeGenerator.getInstance().askForLabel();
+                CodeGenerator.getInstance().generateBranchCode(vsExp, eti1);
                 this.Llista_Inst();
+                CodeGenerator.getInstance().genereteInconditonalBranch(eti2);
+                CodeGenerator.getInstance().writeLabel(eti1);
                 this.Inst1();
                 this.accept(Token.TokenType.FISI);
+                CodeGenerator.getInstance().writeLabel(eti2);
                 break;
 
             case RETORNAR:
